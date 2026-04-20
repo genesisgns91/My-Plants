@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minhas Plantas 🌿</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a1a14;--cream:#f5f0e8;--sage:#7a9e7e;--moss:#4a6741;--terra:#c17a4a;--mist:#d4e0d2;--gold:#b8965a;--red:#c0392b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.4}
+  #syncBar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--sage);z-index:999;transform:scaleX(0);transform-origin:left;transition:transform .4s}
+  #syncBar.active{transform:scaleX(1)}
+  #onlineStatus{position:fixed;top:8px;right:12px;font-size:.65rem;font-weight:500;padding:.2rem .7rem;border-radius:50px;z-index:998}
+  #onlineStatus.online{background:#d4f0d4;color:#2e7d32}
+  #onlineStatus.offline{background:#fce8e8;color:var(--red)}
+  header{padding:3rem 2rem 2rem;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .leaf-deco{font-size:2.5rem;margin-bottom:.5rem;opacity:.6;animation:sway 4s ease-in-out infinite}
+  @keyframes sway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,6vw,3.5rem);font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--moss)}
+  .subtitle{font-size:.85rem;font-weight:300;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-top:.5rem}
+  .stats-bar{display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;justify-content:center}
+  .stat{text-align:center}
+  .stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--terra);line-height:1}
+  .stat-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-top:.2rem}
+  .vine-top{width:100%;text-align:center;font-size:1.2rem;letter-spacing:.3em;opacity:.25;padding:.3rem 0 1rem}
+  .controls{padding:1rem 1.5rem;display:flex;flex-direction:column;gap:.8rem;max-width:900px;margin:0 auto}
+  .search-row{display:flex;gap:.6rem;align-items:center}
+  .search-wrap{position:relative;flex:1}
+  .search-wrap input{width:100%;padding:.75rem 1rem .75rem 2.8rem;border:1.5px solid var(--mist);border-radius:50px;background:white;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink);outline:none;transition:border-color .2s}
+  .search-wrap input:focus{border-color:var(--sage)}
+  .search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:1rem;opacity:.4}
+  .filters{display:flex;gap:.5rem;flex-wrap:wrap}
+  .filter-btn{padding:.35rem .9rem;border-radius:50px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;color:var(--ink);cursor:pointer;transition:all .2s;letter-spacing:.03em}
+  .filter-btn:hover{border-color:var(--sage);background:var(--mist)}
+  .filter-btn.active{background:var(--moss);border-color:var(--moss);color:white}
+  .btn-add{padding:.65rem 1.1rem;border-radius:50px;border:none;background:var(--terra);color:white;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s;flex-shrink:0}
+  .btn-add:hover{background:var(--gold)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:1rem;padding:1rem 1.5rem 3rem;max-width:900px;margin:0 auto}
+  .card{background:white;border-radius:16px;padding:1.2rem 1rem;cursor:pointer;transition:transform .2s,box-shadow .2s;border:1.5px solid transparent;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(74,103,65,.12);border-color:var(--mist)}
+  .card.watered{background:linear-gradient(135deg,#f0f7f0 0%,white 100%);border-color:var(--mist)}
+  .water-badge{position:absolute;top:.6rem;right:.6rem;width:18px;height:18px;background:var(--sage);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;opacity:0;transition:opacity .3s}
+  .card.watered .water-badge{opacity:1}
+  .card-emoji{font-size:2rem;display:block;margin-bottom:.6rem;line-height:1}
+  .card-name{font-family:'Playfair Display',serif;font-size:.85rem;font-weight:700;line-height:1.3;color:var(--ink)}
+  .card-type{font-size:.68rem;font-weight:300;color:var(--sage);margin-top:.3rem;text-transform:uppercase;letter-spacing:.06em}
+  .card-history{margin-top:.5rem;display:flex;flex-direction:column;gap:.15rem;min-height:1.2rem}
+  .hist-chip{font-size:.62rem;color:#777;display:flex;align-items:center;gap:.25rem;line-height:1.3}
+  .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+  .dot-water{background:#6ba3be}.dot-prune{background:#8e7b55}.dot-fert{background:#7a9e3e}
+  .card-actions{margin-top:.7rem}
+  .btn-water{width:100%;padding:.35rem .5rem;border-radius:8px;border:none;font-size:.7rem;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:all .2s;background:var(--mist);color:var(--moss)}
+  .btn-water:hover{background:var(--sage);color:white}
+  .btn-water.watered-btn{background:var(--sage);color:white}
+  .empty{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--sage);font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem}
+  .loading{grid-column:1/-1;text-align:center;padding:3rem;font-size:2rem;animation:pulse 1.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+  .modal-overlay{position:fixed;inset:0;background:rgba(26,26,20,.5);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s}
+  .modal-overlay.open{opacity:1;pointer-events:all}
+  .modal{background:var(--cream);border-radius:20px 20px 16px 16px;padding:1.5rem;width:100%;max-width:440px;transform:translateY(30px);transition:transform .25s;max-height:93vh;overflow-y:auto}
+  .modal-overlay.open .modal{transform:translateY(0)}
+  .modal-emoji{font-size:3rem;display:block;margin-bottom:.5rem}
+  .modal h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--moss)}
+  .modal-type{font-size:.75rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-top:.2rem;margin-bottom:1rem}
+  .modal-info{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+  .info-row{display:flex;gap:.5rem;align-items:flex-start;font-size:.82rem;line-height:1.4}
+  .info-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
+  .info-text{color:#555}
+  .section-title{font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.6rem;margin-top:.2rem}
+  .care-row{display:flex;gap:.5rem;margin-bottom:.5rem}
+  .care-btn{display:flex;align-items:center;gap:.35rem;padding:.5rem .6rem;border-radius:10px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;cursor:pointer;transition:all .2s;color:var(--ink);flex:1;justify-content:center}
+  .care-btn.water-c:hover{background:#e8f4f8;border-color:#6ba3be}
+  .care-btn.prune-c:hover{background:#f4f0e8;border-color:#8e7b55}
+  .care-btn.fert-c:hover{background:#eef4e8;border-color:#7a9e3e}
+  .care-last{font-size:.7rem;color:#888;margin-bottom:.8rem;line-height:1.8}
+  .backdate-panel{background:white;border-radius:10px;padding:.9rem;margin-bottom:.8rem;display:none}
+  .backdate-panel.open{display:block}
+  .backdate-title{font-size:.75rem;font-weight:500;color:var(--moss);margin-bottom:.6rem}
+  .backdate-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+  .backdate-row select,.backdate-row input[type=date]{padding:.4rem .6rem;border:1.5px solid var(--mist);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--ink);background:white;outline:none;flex:1;min-width:0}
+  .backdate-row select:focus,.backdate-row input[type=date]:focus{border-color:var(--sage)}
+  .btn-backdate-save{padding:.4rem .9rem;border-radius:8px;border:none;background:var(--moss);color:white;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;white-space:nowrap}
+  .history-box{background:white;border-radius:10px;padding:.6rem .8rem;margin-bottom:1rem;max-height:150px;overflow-y:auto}
+  .log-empty{font-size:.78rem;color:#aaa;font-style:italic;text-align:center;padding:.4rem}
+  .log-item{display:flex;align-items:center;gap:.5rem;font-size:.75rem;padding:.3rem 0;border-bottom:1px solid var(--mist)}
+  .log-item:last-child{border-bottom:none}
+  .log-icon{font-size:1rem;flex-shrink:0}
+  .log-text{flex:1;color:#555}
+  .log-date{color:#aaa;font-size:.68rem;white-space:nowrap}
+  .log-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:.85rem;padding:0 .2rem;transition:color .2s}
+  .log-del:hover{color:var(--red)}
+  .note-area{width:100%;padding:.75rem;border:1.5px solid var(--mist);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.82rem;resize:none;color:var(--ink);background:white;outline:none;margin-bottom:1rem}
+  .note-area:focus{border-color:var(--sage)}
+  .modal-btns{display:flex;gap:.6rem}
+  .btn-close{flex:1;padding:.65rem;border-radius:10px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;color:var(--ink)}
+  .btn-save{flex:2;padding:.65rem;border-radius:10px;border:none;background:var(--moss);color:white;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:background .2s}
+  .btn-save:hover{background:var(--sage)}
+  .btn-secondary{width:100%;margin-top:.6rem;padding:.55rem;border-radius:10px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.75rem;color:var(--moss);cursor:pointer;transition:all .2s}
+  .btn-secondary:hover{background:var(--mist)}
+  .btn-danger{width:100%;margin-top:.5rem;padding:.5rem;border-radius:10px;border:1.5px solid #e8c8c4;background:white;font-family:'DM Sans',sans-serif;font-size:.75rem;color:var(--red);cursor:pointer;transition:all .2s}
+  .btn-danger:hover{background:#fdf0ee}
+  .add-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--moss);margin-bottom:1.2rem}
+  .form-group{margin-bottom:.85rem}
+  .form-group label{display:block;font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.3rem}
+  .form-group input,.form-group select{width:100%;padding:.65rem .9rem;border:1.5px solid var(--mist);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--ink);background:white;outline:none}
+  .form-group input:focus,.form-group select:focus{border-color:var(--sage)}
+  .form-row{display:flex;gap:.6rem}
+  .form-row .form-group{flex:1}
+  .emoji-picker{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.4rem}
+  .emoji-opt{font-size:1.4rem;padding:.28rem;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .15s;line-height:1}
+  .emoji-opt:hover{background:var(--mist)}
+  .emoji-opt.selected{border-color:var(--sage);background:var(--mist)}
+</style>
+</head>
+<body>
+<div id="syncBar"></div>
+<div id="onlineStatus" class="online">🟢 Online</div>
+
+<header>
+  <div class="leaf-deco">🌿</div>
+  <h1>Minhas Plantas</h1>
+  <p class="subtitle">Jardim Compartilhado</p>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num" id="totalCount">–</div><div class="stat-label">Plantas</div></div>
+    <div class="stat"><div class="stat-num" id="wateredCount">–</div><div class="stat-label">Regadas hoje</div></div>
+    <div class="stat"><div class="stat-num" id="notesCount">–</div><div class="stat-label">Com anotações</div></div>
+  </div>
+</header>
+
+<div class="vine-top">· · · ⸻ 🌱 ⸻ · · ·</div>
+
+<div class="controls">
+  <div class="search-row">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Buscar planta…">
+    </div>
+    <button class="btn-add" id="btnOpenAdd">+ Adicionar</button>
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" data-cat="todas">Todas</button>
+    <button class="filter-btn" data-cat="aromáticas">Aromáticas 🌿</button>
+    <button class="filter-btn" data-cat="suculentas">Suculentas 🪨</button>
+    <button class="filter-btn" data-cat="ornamentais">Ornamentais 🌸</button>
+    <button class="filter-btn" data-cat="tropicais">Tropicais 🌴</button>
+    <button class="filter-btn" data-cat="comestíveis">Comestíveis 🥬</button>
+    <button class="filter-btn" data-cat="sombra">Sombra 🍃</button>
+    <button class="filter-btn" data-cat="outras">Outras 🌱</button>
+  </div>
+</div>
+
+<div class="grid" id="grid"><div class="loading">🌱</div></div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <span class="modal-emoji" id="mEmoji"></span>
+    <h2 id="mName"></h2>
+    <div class="modal-type" id="mType"></div>
+    <div class="modal-info" id="mInfo"></div>
+    <div class="section-title">Registrar cuidado</div>
+    <div class="care-row">
+      <button class="care-btn water-c" id="careWater">💧 Reguei</button>
+      <button class="care-btn prune-c" id="carePrune">✂️ Podei</button>
+      <button class="care-btn fert-c"  id="careFert">🌱 Adubei</button>
+    </div>
+    <div class="care-last" id="careLast"></div>
+    <div class="backdate-panel" id="backdatePanel">
+      <div class="backdate-title">📅 Registrar em data passada</div>
+      <div class="backdate-row">
+        <select id="backdateType">
+          <option value="water">💧 Rega</option>
+          <option value="prune">✂️ Poda</option>
+          <option value="fert">🌱 Adubação</option>
+        </select>
+        <input type="date" id="backdateDate">
+        <button class="btn-backdate-save" id="btnBackdateSave">Salvar</button>
+      </div>
+    </div>
+    <button class="btn-secondary" id="btnToggleBackdate">📅 Registrar data passada</button>
+    <div class="section-title" style="margin-top:.8rem">Histórico de cuidados</div>
+    <div class="history-box" id="historyBox"></div>
+    <div class="section-title">Anotações</div>
+    <textarea class="note-area" id="noteArea" rows="2" placeholder="Observações pessoais…"></textarea>
+    <div class="modal-btns">
+      <button class="btn-close" id="btnClose">Fechar</button>
+      <button class="btn-save" id="btnSave">Salvar nota</button>
+    </div>
+    <button class="btn-secondary" id="btnEditPlant">✏️ Editar esta planta</button>
+    <button class="btn-danger" id="btnDelPlant">🗑 Remover esta planta</button>
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="add-title" id="addModalTitle">✨ Nova Planta</div>
+    <div class="form-group">
+      <label>Nome da planta</label>
+      <input type="text" id="newName" placeholder="Ex: Lavanda">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="newCat">
+          <option value="ornamentais">Ornamentais</option>
+          <option value="aromáticas">Aromáticas</option>
+          <option value="suculentas">Suculentas</option>
+          <option value="tropicais">Tropicais</option>
+          <option value="comestíveis">Comestíveis</option>
+          <option value="sombra">Sombra</option>
+          <option value="outras">Outras</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Luz</label>
+        <select id="newSun">
+          <option>Sol pleno</option>
+          <option>Meia sombra</option>
+          <option>Sombra</option>
+          <option>Sol/Meia</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Necessidade de rega</label>
+      <select id="newWater">
+        <option>Muito baixa</option><option>Pouca</option><option>Baixa</option>
+        <option selected>Moderada</option><option>Alta</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Dica de cuidado (opcional)</label>
+      <input type="text" id="newTip" placeholder="Ex: Podar após floração">
+    </div>
+    <div class="form-group">
+      <label>Emoji</label>
+      <div class="emoji-picker" id="emojiPicker"></div>
+    </div>
+    <div class="modal-btns" style="margin-top:.8rem">
+      <button class="btn-close" id="btnAddClose">Cancelar</button>
+      <button class="btn-save" id="btnAddSave">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const fb = initializeApp({
+  apiKey:"AIzaSyBO2dpMGZG5N7-5wLTexU2puDsGjxzSDaI",
+  authDomain:"minhasplantas-9b229.firebaseapp.com",
+  projectId:"minhasplantas-9b229",
+  storageBucket:"minhasplantas-9b229.firebasestorage.app",
+  messagingSenderId:"568939226178",
+  appId:"1:568939226178:web:dcc77000360c7fdadcb9db"
+});
+const db = getFirestore(fb);
+const col = collection(db,"plants");
+
+const EMOJIS=['🌿','🌱','🌸','🌺','🌻','🌼','🌷','🍀','🍃','🍂','🌵','🪴','🌳','🌴','🌾','🎋','🪻','💐','🌹','🥀','🌲','🪷','🍁','🧅','🥬','🐘'];
+const wIco={"Muito baixa":"💧","Pouca":"💧💧","Baixa":"💧💧","Moderada":"💧💧💧","Alta":"💧💧💧💧","Calice":"🥤"};
+const sIco={"Sol pleno":"☀️","Meia sombra":"⛅","Sombra":"🌥️","Sol/Meia":"🌤️","Sombra/Meia":"🌥️"};
+const cLbl={water:"💧 Rega",prune:"✂️ Poda",fert:"🌱 Adubação"};
+
+const BASE=[
+  {id:"agave-dragao",name:"Agave Dragão",cat:"suculentas",emoji:"🌵",sun:"Sol pleno",water:"Pouca",tip:"Resistente à seca. Não encharcar."},
+  {id:"agave-palito",name:"Agave Palito",cat:"suculentas",emoji:"🪴",sun:"Sol pleno",water:"Pouca",tip:"Folhas rígidas e afiadas. Drene bem."},
+  {id:"alecrim",name:"Alecrim",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",tip:"Ama sol. Ótimo para cozinha."},
+  {id:"alface-crespa",name:"Alface Crespa",cat:"comestíveis",emoji:"🥬",sun:"Meia sombra",water:"Alta",tip:"Colher folhas externas. Regar sempre."},
+  {id:"avenca",name:"Avenca",cat:"sombra",emoji:"🍃",sun:"Sombra",water:"Alta",tip:"Ama umidade. Proteger do vento."},
+  {id:"bougainvillea",name:"Bougainvillea",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Baixa",tip:"Floresce mais quando estressada. Podar pós-florada."},
+  {id:"brinco-princesa",name:"Brinco de Princesa",cat:"ornamentais",emoji:"💜",sun:"Meia sombra",water:"Moderada",tip:"Floresce em ambientes frescos."},
+  {id:"bromelia",name:"Bromélia",cat:"tropicais",emoji:"🌺",sun:"Meia sombra",water:"Calice",tip:"Manter água no cálice central."},
+  {id:"cebolinha",name:"Cebolinha",cat:"comestíveis",emoji:"🧅",sun:"Sol pleno",water:"Moderada",tip:"Colher antes de florescer."},
+  {id:"clorofito",name:"Clorofito",cat:"sombra",emoji:"🌿",sun:"Meia sombra",water:"Moderada",tip:"Filtra o ar. Fácil de se multiplicar."},
+  {id:"coleus",name:"Coleus",cat:"ornamentais",emoji:"🍂",sun:"Meia sombra",water:"Moderada",tip:"Folhagem colorida. Retirar flores para durar mais."},
+  {id:"confete",name:"Confete",cat:"ornamentais",emoji:"🌼",sun:"Sol/Meia",water:"Baixa",tip:"Muito resistente. Poucas exigências."},
+  {id:"cravo",name:"Cravo",cat:"ornamentais",emoji:"🌷",sun:"Sol pleno",water:"Moderada",tip:"Não deixar empapar. Fragância intensa."},
+  {id:"espada-sao-jorge",name:"Espada de São Jorge",cat:"sombra",emoji:"🗡️",sun:"Sombra/Meia",water:"Muito baixa",tip:"Praticamente infalível. Pouca água."},
+  {id:"falsa-erika",name:"Falsa Érika",cat:"ornamentais",emoji:"💐",sun:"Sol pleno",water:"Moderada",tip:"Boa poda mantém a forma arbustiva."},
+  {id:"geranio-pendente",name:"Gerânio Pendente",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Moderada",tip:"Ideal para vasos pendentes. Podar para reflorescer."},
+  {id:"gola-palhaco",name:"Gola de Palhaço",cat:"ornamentais",emoji:"🟢",sun:"Meia sombra",water:"Moderada",tip:"Folhagem variegada. Evitar sol direto forte."},
+  {id:"guine",name:"Guiné",cat:"aromáticas",emoji:"🌿",sun:"Sol/Meia",water:"Moderada",tip:"Repelente natural de insetos."},
+  {id:"hibisco",name:"Hibisco",cat:"ornamentais",emoji:"🌺",sun:"Sol pleno",water:"Alta",tip:"Flores grandes e efêmeras. Adora calor."},
+  {id:"hortela",name:"Hortelã",cat:"aromáticas",emoji:"🌿",sun:"Meia sombra",water:"Alta",tip:"Invasiva em canteiros. Melhor em vaso isolado."},
+  {id:"jiboia-pendente",name:"Jiboia Pendente",cat:"sombra",emoji:"🍃",sun:"Sombra/Meia",water:"Moderada",tip:"Enraíza fácil. Muito adaptável."},
+  {id:"ligustro-bonsai",name:"Ligustro Bonsai",cat:"ornamentais",emoji:"🌳",sun:"Sol pleno",water:"Moderada",tip:"Poda frequente para manter forma. Paciência."},
+  {id:"manjericao",name:"Manjericão",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",tip:"Retirar flores para prolongar colheita."},
+  {id:"mosquitinho",name:"Mosquitinho",cat:"ornamentais",emoji:"💨",sun:"Sol pleno",water:"Baixa",tip:"Florezinhas delicadas. Não encharcar."},
+  {id:"onze-horas",name:"Onze Horas",cat:"suculentas",emoji:"🌼",sun:"Sol pleno",water:"Baixa",tip:"Abre só com sol. Muito resistente ao calor."},
+  {id:"palmeira-raphis",name:"Palmeira Raphis",cat:"tropicais",emoji:"🌴",sun:"Meia sombra",water:"Moderada",tip:"(Ravi) Elegante. Cresce lentamente."},
+  {id:"pata-elefante",name:"Pata de Elefante",cat:"suculentas",emoji:"🐘",sun:"Sol pleno",water:"Muito baixa",tip:"Armazena água no tronco. Muito resistente."},
+  {id:"rosa-deserto",name:"Rosa do Deserto",cat:"suculentas",emoji:"🌸",sun:"Sol pleno",water:"Pouca",tip:"Não molhar folhas. Tronco é reservatório."},
+  {id:"samambaia",name:"Samambaia",cat:"sombra",emoji:"🌿",sun:"Sombra",water:"Alta",tip:"Borrifar folhas. Ama umidade constante."},
+  {id:"zamioculca",name:"Zamioculca",cat:"sombra",emoji:"🌿",sun:"Sombra/Meia",water:"Muito baixa",tip:"Quase indestrutível. Tolera negligência."},
+];
+
+let plantsMap={}, curFilter='todas', curSearch='', activeId=null, selEmoji='🌱', editMode=false;
+const today=()=>new Date().toLocaleDateString('pt-BR');
+
+// online indicator
+window.addEventListener('online', ()=>setOnline(true));
+window.addEventListener('offline',()=>setOnline(false));
+function setOnline(on){
+  const e=document.getElementById('onlineStatus');
+  e.textContent=on?'🟢 Online':'🔴 Offline';
+  e.className=on?'online':'offline';
+}
+function showSync(){
+  const b=document.getElementById('syncBar');
+  b.classList.add('active');
+  setTimeout(()=>b.classList.remove('active'),700);
+}
+
+// seed base plants on first load
+async function seed(snap){
+  if(!snap.empty)return;
+  for(const p of BASE){
+    await setDoc(doc(db,"plants",p.id),{name:p.name,cat:p.cat,emoji:p.emoji,sun:p.sun,water:p.water,tip:p.tip,note:'',log:[],watered:false,wateredDate:''});
+  }
+}
+
+// realtime listener
+onSnapshot(col,async snap=>{
+  await seed(snap);
+  plantsMap={};
+  snap.forEach(d=>{plantsMap[d.id]={id:d.id,...d.data()};});
+  // reset watered for old days
+  const t=today();
+  for(const[id,p]of Object.entries(plantsMap)){
+    if(p.watered&&p.wateredDate!==t) updateDoc(doc(db,"plants",id),{watered:false});
+  }
+  render();
+  if(activeId&&plantsMap[activeId])refreshCare(activeId);
+  showSync();
+});
+
+function lastOf(log,type){
+  const a=(log||[]).filter(l=>l.type===type);
+  return a.length?a[a.length-1].date:null;
+}
+function chips(log){
+  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert');
+  let h='';
+  if(lr)h+=`<div class="hist-chip"><span class="dot dot-water"></span>Rega: ${lr}</div>`;
+  if(lp)h+=`<div class="hist-chip"><span class="dot dot-prune"></span>Poda: ${lp}</div>`;
+  if(lf)h+=`<div class="hist-chip"><span class="dot dot-fert"></span>Adub: ${lf}</div>`;
+  return h;
+}
+function stats(){
+  const all=Object.values(plantsMap),t=today();
+  document.getElementById('totalCount').textContent=all.length;
+  document.getElementById('wateredCount').textContent=all.filter(p=>p.watered&&p.wateredDate===t).length;
+  document.getElementById('notesCount').textContent=all.filter(p=>p.note).length;
+}
+
+function render(){
+  const g=document.getElementById('grid'),t=today();
+  const list=Object.values(plantsMap)
+    .filter(p=>(curFilter==='todas'||p.cat===curFilter)&&p.name.toLowerCase().includes(curSearch.toLowerCase()))
+    .sort((a,b)=>a.name.localeCompare(b.name,'pt'));
+  g.innerHTML='';
+  if(!list.length){g.innerHTML='<div class="empty">Nenhuma planta encontrada…</div>';stats();return;}
+  list.forEach((p,i)=>{
+    const isW=p.watered&&p.wateredDate===t;
+    const c=document.createElement('div');
+    c.className='card'+(isW?' watered':'');
+    c.style.animationDelay=(i*.03)+'s';
+    c.innerHTML=`<div class="water-badge">💧</div>
+      <span class="card-emoji">${p.emoji}${p.note?'<sup style="font-size:.55rem">📝</sup>':''}</span>
+      <div class="card-name">${p.name}</div>
+      <div class="card-type">${p.cat}</div>
+      <div class="card-history">${chips(p.log)}</div>
+      <div class="card-actions"><button class="btn-water ${isW?'watered-btn':''}">${isW?'✓ Regada':'💧 Regar'}</button></div>`;
+    c.querySelector('.btn-water').addEventListener('click',e=>{e.stopPropagation();toggleWater(p.id);});
+    c.addEventListener('click',()=>openDetail(p.id));
+    g.appendChild(c);
+  });
+  stats();
+}
+
+async function toggleWater(id){
+  const p=plantsMap[id];if(!p)return;
+  const t=today(),r=doc(db,"plants",id);
+  if(p.watered&&p.wateredDate===t){
+    const lw=[...(p.log||[])].reverse().find(l=>l.type==='water'&&l.date===t);
+    const u={watered:false};
+    if(lw)u.log=arrayRemove(lw);
+    await updateDoc(r,u);
+  }else{
+    const e={type:'water',date:t,ts:Date.now()};
+    await updateDoc(r,{watered:true,wateredDate:t,log:arrayUnion(e)});
+  }
+}
+
+async function addLog(id,type,dateStr){
+  const e={type,date:dateStr,ts:Date.now()};
+  const u={log:arrayUnion(e)};
+  if(type==='water'){u.watered=true;u.wateredDate=dateStr;}
+  await updateDoc(doc(db,"plants",id),u);
+}
+
+function openDetail(id){
+  activeId=id;
+  const p=plantsMap[id];if(!p)return;
+  document.getElementById('mEmoji').textContent=p.emoji;
+  document.getElementById('mName').textContent=p.name;
+  document.getElementById('mType').textContent=p.cat;
+  document.getElementById('noteArea').value=p.note||'';
+  document.getElementById('mInfo').innerHTML=`
+    <div class="info-row"><span class="info-icon">${sIco[p.sun]||'☀️'}</span><span class="info-text"><strong>Luz:</strong> ${p.sun}</span></div>
+    <div class="info-row"><span class="info-icon">${wIco[p.water]||'💧'}</span><span class="info-text"><strong>Rega:</strong> ${p.water}</span></div>
+    <div class="info-row"><span class="info-icon">💡</span><span class="info-text">${p.tip}</span></div>`;
+  document.getElementById('backdatePanel').classList.remove('open');
+  document.getElementById('btnToggleBackdate').textContent='📅 Registrar data passada';
+  const y=new Date();y.setDate(y.getDate()-1);
+  document.getElementById('backdateDate').value=y.toISOString().split('T')[0];
+  refreshCare(id);
+  document.getElementById('detailModal').classList.add('open');
+}
+
+function refreshCare(id){
+  const p=plantsMap[id];if(!p)return;
+  const log=p.log||[];
+  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert');
+  const pts=[];
+  if(lr)pts.push(`💧 ${lr}`);if(lp)pts.push(`✂️ ${lp}`);if(lf)pts.push(`🌱 ${lf}`);
+  document.getElementById('careLast').innerHTML=pts.length
+    ?pts.map(x=>`<span style="margin-right:.8rem">${x}</span>`).join('')
+    :'<span style="color:#bbb;font-style:italic">Nenhum registro ainda.</span>';
+  const box=document.getElementById('historyBox');
+  const sorted=[...log].sort((a,b)=>b.ts-a.ts);
+  if(!sorted.length){box.innerHTML='<div class="log-empty">Sem registros ainda.</div>';return;}
+  box.innerHTML=sorted.map(e=>`
+    <div class="log-item">
+      <span class="log-icon">${e.type==='water'?'💧':e.type==='prune'?'✂️':'🌱'}</span>
+      <span class="log-text">${cLbl[e.type]}</span>
+      <span class="log-date">${e.date}</span>
+      <button class="log-del" data-id="${id}" data-type="${e.type}" data-date="${e.date}" data-ts="${e.ts}">✕</button>
+    </div>`).join('');
+  box.querySelectorAll('.log-del').forEach(b=>{
+    b.addEventListener('click',async()=>{
+      const entry={type:b.dataset.type,date:b.dataset.date,ts:parseInt(b.dataset.ts)};
+      await updateDoc(doc(db,"plants",b.dataset.id),{log:arrayRemove(entry)});
+    });
+  });
+}
+
+['Water','Prune','Fert'].forEach(c=>{
+  document.getElementById('care'+c).addEventListener('click',async()=>{
+    if(!activeId)return;
+    await addLog(activeId,c.toLowerCase(),today());
+  });
+});
+
+document.getElementById('btnToggleBackdate').addEventListener('click',()=>{
+  const p=document.getElementById('backdatePanel');
+  const o=p.classList.toggle('open');
+  document.getElementById('btnToggleBackdate').textContent=o?'▲ Fechar':'📅 Registrar data passada';
+});
+document.getElementById('btnBackdateSave').addEventListener('click',async()=>{
+  if(!activeId)return;
+  const type=document.getElementById('backdateType').value;
+  const raw=document.getElementById('backdateDate').value;if(!raw)return;
+  const[y,m,d]=raw.split('-');
+  await addLog(activeId,type,`${d}/${m}/${y}`);
+  document.getElementById('backdatePanel').classList.remove('open');
+  document.getElementById('btnToggleBackdate').textContent='📅 Registrar data passada';
+});
+
+document.getElementById('btnSave').addEventListener('click',async()=>{
+  if(!activeId)return;
+  await updateDoc(doc(db,"plants",activeId),{note:document.getElementById('noteArea').value});
+  document.getElementById('detailModal').classList.remove('open');
+});
+document.getElementById('btnEditPlant').addEventListener('click',()=>{
+  const p=plantsMap[activeId];if(!p)return;
+  editMode=true;
+  document.getElementById('addModalTitle').textContent='✏️ Editar Planta';
+  document.getElementById('newName').value=p.name;
+  document.getElementById('newCat').value=p.cat;
+  document.getElementById('newSun').value=p.sun;
+  document.getElementById('newWater').value=p.water;
+  document.getElementById('newTip').value=p.tip;
+  selEmoji=p.emoji;
+  document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.toggle('selected',x.dataset.e===selEmoji));
+  document.getElementById('detailModal').classList.remove('open');
+  document.getElementById('addModal').classList.add('open');
+});
+document.getElementById('btnDelPlant').addEventListener('click',async()=>{
+  const p=plantsMap[activeId];
+  if(!p||!confirm(`Remover "${p.name}"?`))return;
+  await deleteDoc(doc(db,"plants",activeId));
+  document.getElementById('detailModal').classList.remove('open');
+});
+document.getElementById('btnClose').addEventListener('click',()=>document.getElementById('detailModal').classList.remove('open'));
+document.getElementById('detailModal').addEventListener('click',e=>{if(e.target.id==='detailModal')document.getElementById('detailModal').classList.remove('open');});
+
+// emoji picker
+(()=>{
+  const pk=document.getElementById('emojiPicker');
+  pk.innerHTML=EMOJIS.map(e=>`<span class="emoji-opt${e===selEmoji?' selected':''}" data-e="${e}">${e}</span>`).join('');
+  pk.addEventListener('click',e=>{
+    const t=e.target.closest('.emoji-opt');if(!t)return;
+    pk.querySelectorAll('.emoji-opt').forEach(x=>x.classList.remove('selected'));
+    t.classList.add('selected');selEmoji=t.dataset.e;
+  });
+})();
+
+document.getElementById('btnOpenAdd').addEventListener('click',()=>{
+  editMode=false;
+  document.getElementById('addModalTitle').textContent='✨ Nova Planta';
+  document.getElementById('newName').value='';
+  document.getElementById('newTip').value='';
+  selEmoji='🌱';
+  document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.toggle('selected',x.dataset.e==='🌱'));
+  document.getElementById('addModal').classList.add('open');
+  setTimeout(()=>document.getElementById('newName').focus(),300);
+});
+document.getElementById('btnAddClose').addEventListener('click',()=>document.getElementById('addModal').classList.remove('open'));
+document.getElementById('addModal').addEventListener('click',e=>{if(e.target.id==='addModal')document.getElementById('addModal').classList.remove('open');});
+document.getElementById('btnAddSave').addEventListener('click',async()=>{
+  const name=document.getElementById('newName').value.trim();
+  if(!name){document.getElementById('newName').focus();return;}
+  const data={
+    name,
+    cat:document.getElementById('newCat').value,
+    emoji:selEmoji,
+    sun:document.getElementById('newSun').value,
+    water:document.getElementById('newWater').value,
+    tip:document.getElementById('newTip').value.trim()||'Sem dicas cadastradas.',
+  };
+  if(editMode&&activeId){
+    await updateDoc(doc(db,"plants",activeId),data);
+  }else{
+    const id=name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'-'+Date.now();
+    await setDoc(doc(db,"plants",id),{...data,note:'',log:[],watered:false,wateredDate:''});
+  }
+  document.getElementById('addModal').classList.remove('open');
+});
+
+document.getElementById('searchInput').addEventListener('input',e=>{curSearch=e.target.value;render();});
+document.querySelectorAll('.filter-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');curFilter=b.dataset.cat;render();
+  });
+});
+</script>
+</body>
+</html>
