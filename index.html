@@ -6,7 +6,7 @@
 <title>Minhas Plantas 🌿</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#1a1a14;--cream:#f5f0e8;--sage:#7a9e7e;--moss:#4a6741;--terra:#c17a4a;--mist:#d4e0d2;--gold:#b8965a;--red:#c0392b}
+  :root{--ink:#1a1a14;--cream:#f5f0e8;--sage:#7a9e7e;--moss:#4a6741;--terra:#c17a4a;--mist:#d4e0d2;--gold:#b8965a;--red:#c0392b;--blue:#6ba3be}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
   body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.4}
@@ -31,33 +31,57 @@
   .search-wrap input{width:100%;padding:.75rem 1rem .75rem 2.8rem;border:1.5px solid var(--mist);border-radius:50px;background:white;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink);outline:none;transition:border-color .2s}
   .search-wrap input:focus{border-color:var(--sage)}
   .search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:1rem;opacity:.4}
+  .btn-add{padding:.65rem 1.1rem;border-radius:50px;border:none;background:var(--terra);color:white;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s;flex-shrink:0}
+  .btn-add:hover{background:var(--gold)}
+  /* Water All button */
+  .action-row{display:flex;gap:.6rem;align-items:center}
+  .btn-water-all{padding:.55rem 1rem;border-radius:50px;border:1.5px solid var(--sage);background:white;color:var(--moss);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0;display:flex;align-items:center;gap:.3rem}
+  .btn-water-all:hover{background:var(--sage);color:white}
   .filters{display:flex;gap:.5rem;flex-wrap:wrap}
   .filter-btn{padding:.35rem .9rem;border-radius:50px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;color:var(--ink);cursor:pointer;transition:all .2s;letter-spacing:.03em}
   .filter-btn:hover{border-color:var(--sage);background:var(--mist)}
   .filter-btn.active{background:var(--moss);border-color:var(--moss);color:white}
-  .btn-add{padding:.65rem 1.1rem;border-radius:50px;border:none;background:var(--terra);color:white;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s;flex-shrink:0}
-  .btn-add:hover{background:var(--gold)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:1rem;padding:1rem 1.5rem 3rem;max-width:900px;margin:0 auto}
-  .card{background:white;border-radius:16px;padding:1.2rem 1rem;cursor:pointer;transition:transform .2s,box-shadow .2s;border:1.5px solid transparent;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+
+  /* Species group layout */
+  .species-groups{display:flex;flex-direction:column;gap:1.4rem;padding:1rem 1.5rem 3rem;max-width:900px;margin:0 auto}
+  .species-group{background:white;border-radius:18px;border:1.5px solid var(--mist);overflow:hidden;animation:fadeUp .4s ease both}
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-  .card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(74,103,65,.12);border-color:var(--mist)}
-  .card.watered{background:linear-gradient(135deg,#f0f7f0 0%,white 100%);border-color:var(--mist)}
-  .water-badge{position:absolute;top:.6rem;right:.6rem;width:18px;height:18px;background:var(--sage);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;opacity:0;transition:opacity .3s}
-  .card.watered .water-badge{opacity:1}
-  .card-emoji{font-size:2rem;display:block;margin-bottom:.6rem;line-height:1}
-  .card-name{font-family:'Playfair Display',serif;font-size:.85rem;font-weight:700;line-height:1.3;color:var(--ink)}
-  .card-type{font-size:.68rem;font-weight:300;color:var(--sage);margin-top:.3rem;text-transform:uppercase;letter-spacing:.06em}
-  .card-history{margin-top:.5rem;display:flex;flex-direction:column;gap:.15rem;min-height:1.2rem}
-  .hist-chip{font-size:.62rem;color:#777;display:flex;align-items:center;gap:.25rem;line-height:1.3}
-  .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+  .species-header{display:flex;align-items:center;gap:.8rem;padding:1rem 1.2rem .7rem;cursor:pointer;user-select:none}
+  .species-header:hover{background:rgba(212,224,210,.15)}
+  .species-emoji{font-size:1.8rem;line-height:1}
+  .species-meta{flex:1;min-width:0}
+  .species-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--ink);line-height:1.2}
+  .species-cat{font-size:.68rem;color:var(--sage);text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem}
+  .species-badges{display:flex;gap:.35rem;align-items:center;flex-shrink:0}
+  .badge-pots{font-size:.7rem;background:var(--mist);color:var(--moss);padding:.15rem .5rem;border-radius:50px;font-weight:500}
+  .badge-remind{font-size:.7rem;background:#fff3e0;color:#e65100;padding:.15rem .5rem;border-radius:50px;font-weight:500}
+  .pots-row{display:flex;gap:.7rem;padding:.2rem 1rem .9rem;overflow-x:auto;scrollbar-width:none}
+  .pots-row::-webkit-scrollbar{display:none}
+  /* Pot card */
+  .pot-card{flex-shrink:0;width:130px;background:var(--cream);border-radius:14px;padding:.9rem .8rem;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;border:1.5px solid transparent;position:relative}
+  .pot-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(74,103,65,.1);border-color:var(--mist)}
+  .pot-card.watered{background:linear-gradient(135deg,#eef7ee 0%,var(--cream) 100%);border-color:#b8d8b8}
+  .pot-photo{width:100%;height:72px;object-fit:cover;border-radius:9px;margin-bottom:.55rem;display:block}
+  .pot-photo-placeholder{width:100%;height:72px;border-radius:9px;background:var(--mist);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:.55rem;opacity:.5}
+  .pot-name{font-size:.78rem;font-weight:500;color:var(--ink);line-height:1.3}
+  .pot-hist{margin-top:.3rem;display:flex;flex-direction:column;gap:.1rem}
+  .pot-chip{font-size:.58rem;color:#888;display:flex;align-items:center;gap:.2rem}
+  .dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
   .dot-water{background:#6ba3be}.dot-prune{background:#8e7b55}.dot-fert{background:#7a9e3e}
-  .card-actions{margin-top:.7rem}
-  .btn-water{width:100%;padding:.35rem .5rem;border-radius:8px;border:none;font-size:.7rem;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:all .2s;background:var(--mist);color:var(--moss)}
-  .btn-water:hover{background:var(--sage);color:white}
-  .btn-water.watered-btn{background:var(--sage);color:white}
-  .empty{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--sage);font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem}
-  .loading{grid-column:1/-1;text-align:center;padding:3rem;font-size:2rem;animation:pulse 1.2s ease-in-out infinite}
+  .pot-water-btn{margin-top:.5rem;width:100%;padding:.28rem .4rem;border-radius:7px;border:none;font-size:.65rem;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:all .2s;background:rgba(212,224,210,.5);color:var(--moss)}
+  .pot-water-btn:hover{background:var(--sage);color:white}
+  .pot-water-btn.watered-btn{background:var(--sage);color:white}
+  .water-badge{position:absolute;top:.45rem;right:.45rem;width:16px;height:16px;background:var(--sage);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.55rem;opacity:0;transition:opacity .3s}
+  .pot-card.watered .water-badge{opacity:1}
+  .remind-dot{position:absolute;top:.45rem;left:.45rem;width:8px;height:8px;background:#e65100;border-radius:50%}
+  .btn-add-pot{flex-shrink:0;width:80px;background:transparent;border-radius:14px;padding:.9rem .6rem;cursor:pointer;border:1.5px dashed var(--mist);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;transition:all .2s;color:var(--sage);font-size:.7rem;font-family:'DM Sans',sans-serif;font-weight:500;text-align:center}
+  .btn-add-pot:hover{border-color:var(--sage);background:rgba(212,224,210,.2)}
+  .btn-add-pot span{font-size:1.4rem;line-height:1}
+  .empty{text-align:center;padding:3rem 1rem;color:var(--sage);font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem}
+  .loading{text-align:center;padding:3rem;font-size:2rem;animation:pulse 1.2s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+  /* Modals */
   .modal-overlay{position:fixed;inset:0;background:rgba(26,26,20,.5);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s}
   .modal-overlay.open{opacity:1;pointer-events:all}
   .modal{background:var(--cream);border-radius:20px 20px 16px 16px;padding:1.5rem;width:100%;max-width:440px;transform:translateY(30px);transition:transform .25s;max-height:93vh;overflow-y:auto}
@@ -69,13 +93,37 @@
   .info-row{display:flex;gap:.5rem;align-items:flex-start;font-size:.82rem;line-height:1.4}
   .info-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
   .info-text{color:#555}
-  .section-title{font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.6rem;margin-top:.2rem}
+  .section-title{font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.6rem;margin-top:.8rem}
+
+  /* Photo gallery in modal */
+  .photo-gallery{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.3rem;margin-bottom:.2rem;scrollbar-width:none}
+  .photo-gallery::-webkit-scrollbar{display:none}
+  .photo-thumb-wrap{position:relative;flex-shrink:0}
+  .photo-thumb{width:72px;height:72px;object-fit:cover;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:border-color .2s}
+  .photo-thumb:hover{border-color:var(--sage)}
+  .photo-thumb-date{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:white;font-size:.5rem;text-align:center;padding:.1rem .2rem;border-radius:0 0 8px 8px;line-height:1.4}
+  .photo-del{position:absolute;top:-5px;right:-5px;width:17px;height:17px;background:var(--red);color:white;border:none;border-radius:50%;font-size:.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+  .btn-photo-add{flex-shrink:0;width:72px;height:72px;border-radius:10px;border:1.5px dashed var(--mist);background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;cursor:pointer;color:var(--sage);font-size:.6rem;font-family:'DM Sans',sans-serif;transition:all .2s}
+  .btn-photo-add:hover{border-color:var(--sage);background:rgba(212,224,210,.15)}
+  .btn-photo-add span{font-size:1.2rem}
+  #photoInput{display:none}
+
+  /* Lightbox */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:800;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+  .lightbox.open{opacity:1;pointer-events:all}
+  .lightbox img{max-width:95vw;max-height:90vh;border-radius:12px;object-fit:contain}
+  .lightbox-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.15);border:none;color:white;font-size:1.4rem;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .lightbox-date{position:absolute;bottom:1.5rem;color:rgba(255,255,255,.6);font-size:.8rem;font-family:'DM Sans',sans-serif}
+
+  /* Care buttons */
   .care-row{display:flex;gap:.5rem;margin-bottom:.5rem}
   .care-btn{display:flex;align-items:center;gap:.35rem;padding:.5rem .6rem;border-radius:10px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;cursor:pointer;transition:all .2s;color:var(--ink);flex:1;justify-content:center}
-  .care-btn.water-c:hover{background:#e8f4f8;border-color:#6ba3be}
-  .care-btn.prune-c:hover{background:#f4f0e8;border-color:#8e7b55}
-  .care-btn.fert-c:hover{background:#eef4e8;border-color:#7a9e3e}
-  .care-last{font-size:.7rem;color:#888;margin-bottom:.8rem;line-height:1.8}
+  .care-btn.water-c:hover,.care-btn.water-c.active{background:#e8f4f8;border-color:#6ba3be}
+  .care-btn.prune-c:hover,.care-btn.prune-c.active{background:#f4f0e8;border-color:#8e7b55}
+  .care-btn.fert-c:hover,.care-btn.fert-c.active{background:#eef4e8;border-color:#7a9e3e}
+  .care-last{font-size:.7rem;color:#888;margin-bottom:.6rem;line-height:1.8}
+
+  /* Backdate */
   .backdate-panel{background:white;border-radius:10px;padding:.9rem;margin-bottom:.8rem;display:none}
   .backdate-panel.open{display:block}
   .backdate-title{font-size:.75rem;font-weight:500;color:var(--moss);margin-bottom:.6rem}
@@ -83,7 +131,9 @@
   .backdate-row select,.backdate-row input[type=date]{padding:.4rem .6rem;border:1.5px solid var(--mist);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--ink);background:white;outline:none;flex:1;min-width:0}
   .backdate-row select:focus,.backdate-row input[type=date]:focus{border-color:var(--sage)}
   .btn-backdate-save{padding:.4rem .9rem;border-radius:8px;border:none;background:var(--moss);color:white;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;white-space:nowrap}
-  .history-box{background:white;border-radius:10px;padding:.6rem .8rem;margin-bottom:1rem;max-height:150px;overflow-y:auto}
+
+  /* History */
+  .history-box{background:white;border-radius:10px;padding:.6rem .8rem;margin-bottom:.5rem;max-height:160px;overflow-y:auto}
   .log-empty{font-size:.78rem;color:#aaa;font-style:italic;text-align:center;padding:.4rem}
   .log-item{display:flex;align-items:center;gap:.5rem;font-size:.75rem;padding:.3rem 0;border-bottom:1px solid var(--mist)}
   .log-item:last-child{border-bottom:none}
@@ -92,8 +142,28 @@
   .log-date{color:#aaa;font-size:.68rem;white-space:nowrap}
   .log-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:.85rem;padding:0 .2rem;transition:color .2s}
   .log-del:hover{color:var(--red)}
-  .note-area{width:100%;padding:.75rem;border:1.5px solid var(--mist);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.82rem;resize:none;color:var(--ink);background:white;outline:none;margin-bottom:1rem}
+
+  /* Reminders */
+  .remind-list{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.4rem}
+  .remind-item{display:flex;align-items:center;gap:.5rem;background:white;border-radius:9px;padding:.45rem .7rem;font-size:.75rem}
+  .remind-item.overdue{background:#fff3e0;border:1px solid #ffcc80}
+  .remind-item.overdue .remind-label{color:#e65100}
+  .remind-icon{font-size:.95rem;flex-shrink:0}
+  .remind-label{flex:1;color:#555}
+  .remind-date{font-size:.68rem;color:#aaa;white-space:nowrap}
+  .remind-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:.8rem;transition:color .2s}
+  .remind-del:hover{color:var(--red)}
+  .remind-add-row{display:flex;gap:.5rem;flex-wrap:wrap;background:white;border-radius:10px;padding:.7rem;margin-bottom:.5rem}
+  .remind-add-row select,.remind-add-row input[type=date]{padding:.38rem .55rem;border:1.5px solid var(--mist);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.75rem;color:var(--ink);background:white;outline:none;flex:1;min-width:0}
+  .remind-add-row input[type=text]{padding:.38rem .55rem;border:1.5px solid var(--mist);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.75rem;color:var(--ink);background:white;outline:none;flex:2;min-width:0}
+  .remind-add-row select:focus,.remind-add-row input:focus{border-color:var(--sage)}
+  .btn-remind-add{padding:.38rem .8rem;border-radius:8px;border:none;background:var(--terra);color:white;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;cursor:pointer;white-space:nowrap}
+
+  /* Note */
+  .note-area{width:100%;padding:.75rem;border:1.5px solid var(--mist);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.82rem;resize:none;color:var(--ink);background:white;outline:none;margin-bottom:.8rem}
   .note-area:focus{border-color:var(--sage)}
+
+  /* Buttons */
   .modal-btns{display:flex;gap:.6rem}
   .btn-close{flex:1;padding:.65rem;border-radius:10px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;color:var(--ink)}
   .btn-save{flex:2;padding:.65rem;border-radius:10px;border:none;background:var(--moss);color:white;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:background .2s}
@@ -102,6 +172,8 @@
   .btn-secondary:hover{background:var(--mist)}
   .btn-danger{width:100%;margin-top:.5rem;padding:.5rem;border-radius:10px;border:1.5px solid #e8c8c4;background:white;font-family:'DM Sans',sans-serif;font-size:.75rem;color:var(--red);cursor:pointer;transition:all .2s}
   .btn-danger:hover{background:#fdf0ee}
+
+  /* Add/Edit form */
   .add-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--moss);margin-bottom:1.2rem}
   .form-group{margin-bottom:.85rem}
   .form-group label{display:block;font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.3rem}
@@ -113,20 +185,25 @@
   .emoji-opt{font-size:1.4rem;padding:.28rem;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .15s;line-height:1}
   .emoji-opt:hover{background:var(--mist)}
   .emoji-opt.selected{border-color:var(--sage);background:var(--mist)}
+
+  /* Toast */
+  #toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:white;padding:.55rem 1.2rem;border-radius:50px;font-size:.8rem;font-family:'DM Sans',sans-serif;z-index:900;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 <div id="syncBar"></div>
 <div id="onlineStatus" class="online">🟢 Online</div>
+<div id="toast"></div>
 
 <header>
   <div class="leaf-deco">🌿</div>
   <h1>Minhas Plantas</h1>
   <p class="subtitle">Jardim Compartilhado</p>
   <div class="stats-bar">
-    <div class="stat"><div class="stat-num" id="totalCount">–</div><div class="stat-label">Plantas</div></div>
-    <div class="stat"><div class="stat-num" id="wateredCount">–</div><div class="stat-label">Regadas hoje</div></div>
-    <div class="stat"><div class="stat-num" id="notesCount">–</div><div class="stat-label">Com anotações</div></div>
+    <div class="stat"><div class="stat-num" id="totalCount">–</div><div class="stat-label">Espécies</div></div>
+    <div class="stat"><div class="stat-num" id="wateredCount">–</div><div class="stat-label">Vasos regados</div></div>
+    <div class="stat"><div class="stat-num" id="remindCount">–</div><div class="stat-label">Lembretes</div></div>
   </div>
 </header>
 
@@ -138,7 +215,10 @@
       <span class="search-icon">🔍</span>
       <input type="text" id="searchInput" placeholder="Buscar planta…">
     </div>
-    <button class="btn-add" id="btnOpenAdd">+ Adicionar</button>
+    <button class="btn-add" id="btnOpenAdd">+ Espécie</button>
+  </div>
+  <div class="action-row">
+    <button class="btn-water-all" id="btnWaterAll">💧 Regar todas</button>
   </div>
   <div class="filters">
     <button class="filter-btn active" data-cat="todas">Todas</button>
@@ -152,15 +232,29 @@
   </div>
 </div>
 
-<div class="grid" id="grid"><div class="loading">🌱</div></div>
+<div class="species-groups" id="speciesGroups"><div class="loading">🌱</div></div>
 
-<!-- DETAIL MODAL -->
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox">
+  <button class="lightbox-close" id="lbClose">✕</button>
+  <img id="lbImg" src="" alt="">
+  <div class="lightbox-date" id="lbDate"></div>
+</div>
+
+<!-- POT DETAIL MODAL -->
 <div class="modal-overlay" id="detailModal">
   <div class="modal">
     <span class="modal-emoji" id="mEmoji"></span>
     <h2 id="mName"></h2>
     <div class="modal-type" id="mType"></div>
     <div class="modal-info" id="mInfo"></div>
+
+    <!-- Photos -->
+    <div class="section-title">📸 Fotos do vaso</div>
+    <div class="photo-gallery" id="photoGallery"></div>
+    <input type="file" id="photoInput" accept="image/*" capture="environment">
+
+    <!-- Care -->
     <div class="section-title">Registrar cuidado</div>
     <div class="care-row">
       <button class="care-btn water-c" id="careWater">💧 Reguei</button>
@@ -168,6 +262,8 @@
       <button class="care-btn fert-c"  id="careFert">🌱 Adubei</button>
     </div>
     <div class="care-last" id="careLast"></div>
+
+    <!-- Backdate -->
     <div class="backdate-panel" id="backdatePanel">
       <div class="backdate-title">📅 Registrar em data passada</div>
       <div class="backdate-row">
@@ -181,25 +277,45 @@
       </div>
     </div>
     <button class="btn-secondary" id="btnToggleBackdate">📅 Registrar data passada</button>
+
+    <!-- History (chronological) -->
     <div class="section-title" style="margin-top:.8rem">Histórico de cuidados</div>
     <div class="history-box" id="historyBox"></div>
+
+    <!-- Reminders -->
+    <div class="section-title">🔔 Lembretes</div>
+    <div class="remind-list" id="remindList"></div>
+    <div class="remind-add-row" id="remindAddRow">
+      <select id="remindType">
+        <option value="water">💧 Rega</option>
+        <option value="prune">✂️ Poda</option>
+        <option value="fert">🌱 Adubação</option>
+        <option value="other">📝 Outro</option>
+      </select>
+      <input type="text" id="remindNote" placeholder="Observação (opcional)">
+      <input type="date" id="remindDate">
+      <button class="btn-remind-add" id="btnRemindAdd">+ Lembrete</button>
+    </div>
+
+    <!-- Note -->
     <div class="section-title">Anotações</div>
     <textarea class="note-area" id="noteArea" rows="2" placeholder="Observações pessoais…"></textarea>
+
     <div class="modal-btns">
       <button class="btn-close" id="btnClose">Fechar</button>
       <button class="btn-save" id="btnSave">Salvar nota</button>
     </div>
-    <button class="btn-secondary" id="btnEditPlant">✏️ Editar esta planta</button>
-    <button class="btn-danger" id="btnDelPlant">🗑 Remover esta planta</button>
+    <button class="btn-secondary" id="btnEditPot">✏️ Renomear este vaso</button>
+    <button class="btn-danger" id="btnDelPot">🗑 Remover este vaso</button>
   </div>
 </div>
 
-<!-- ADD/EDIT MODAL -->
+<!-- ADD/EDIT SPECIES MODAL -->
 <div class="modal-overlay" id="addModal">
   <div class="modal">
-    <div class="add-title" id="addModalTitle">✨ Nova Planta</div>
+    <div class="add-title" id="addModalTitle">✨ Nova Espécie</div>
     <div class="form-group">
-      <label>Nome da planta</label>
+      <label>Nome da espécie</label>
       <input type="text" id="newName" placeholder="Ex: Lavanda">
     </div>
     <div class="form-row">
@@ -244,12 +360,28 @@
       <button class="btn-close" id="btnAddClose">Cancelar</button>
       <button class="btn-save" id="btnAddSave">Salvar</button>
     </div>
+    <button class="btn-danger" id="btnDelSpecies" style="display:none">🗑 Remover toda a espécie</button>
+  </div>
+</div>
+
+<!-- ADD POT MODAL -->
+<div class="modal-overlay" id="potModal">
+  <div class="modal">
+    <div class="add-title">🪴 Novo Vaso</div>
+    <div class="form-group">
+      <label>Nome / identificação do vaso</label>
+      <input type="text" id="potName" placeholder="Ex: Vaso 1, Varanda, Sala...">
+    </div>
+    <div class="modal-btns" style="margin-top:.8rem">
+      <button class="btn-close" id="btnPotClose">Cancelar</button>
+      <button class="btn-save" id="btnPotSave">Adicionar Vaso</button>
+    </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove }
+import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove, getDocs }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const fb = initializeApp({
@@ -261,51 +393,41 @@ const fb = initializeApp({
   appId:"1:568939226178:web:dcc77000360c7fdadcb9db"
 });
 const db = getFirestore(fb);
-const col = collection(db,"plants");
+
+// Two collections: "species" and "pots"
+// species: { id, name, cat, emoji, sun, water, tip }
+// pots: { id, speciesId, potName, note, log[], photos[], reminders[], watered, wateredDate }
+
+const speciesCol = collection(db,"species");
+const potsCol    = collection(db,"pots");
 
 const EMOJIS=['🌿','🌱','🌸','🌺','🌻','🌼','🌷','🍀','🍃','🍂','🌵','🪴','🌳','🌴','🌾','🎋','🪻','💐','🌹','🥀','🌲','🪷','🍁','🧅','🥬','🐘'];
 const wIco={"Muito baixa":"💧","Pouca":"💧💧","Baixa":"💧💧","Moderada":"💧💧💧","Alta":"💧💧💧💧","Calice":"🥤"};
 const sIco={"Sol pleno":"☀️","Meia sombra":"⛅","Sombra":"🌥️","Sol/Meia":"🌤️","Sombra/Meia":"🌥️"};
 const cLbl={water:"💧 Rega",prune:"✂️ Poda",fert:"🌱 Adubação"};
+const remindIco={water:"💧",prune:"✂️",fert:"🌱",other:"📝"};
 
-const BASE=[
-  {id:"agave-dragao",name:"Agave Dragão",cat:"suculentas",emoji:"🌵",sun:"Sol pleno",water:"Pouca",tip:"Resistente à seca. Não encharcar."},
-  {id:"agave-palito",name:"Agave Palito",cat:"suculentas",emoji:"🪴",sun:"Sol pleno",water:"Pouca",tip:"Folhas rígidas e afiadas. Drene bem."},
-  {id:"alecrim",name:"Alecrim",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",tip:"Ama sol. Ótimo para cozinha."},
-  {id:"alface-crespa",name:"Alface Crespa",cat:"comestíveis",emoji:"🥬",sun:"Meia sombra",water:"Alta",tip:"Colher folhas externas. Regar sempre."},
-  {id:"avenca",name:"Avenca",cat:"sombra",emoji:"🍃",sun:"Sombra",water:"Alta",tip:"Ama umidade. Proteger do vento."},
-  {id:"bougainvillea",name:"Bougainvillea",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Baixa",tip:"Floresce mais quando estressada. Podar pós-florada."},
-  {id:"brinco-princesa",name:"Brinco de Princesa",cat:"ornamentais",emoji:"💜",sun:"Meia sombra",water:"Moderada",tip:"Floresce em ambientes frescos."},
-  {id:"bromelia",name:"Bromélia",cat:"tropicais",emoji:"🌺",sun:"Meia sombra",water:"Calice",tip:"Manter água no cálice central."},
-  {id:"cebolinha",name:"Cebolinha",cat:"comestíveis",emoji:"🧅",sun:"Sol pleno",water:"Moderada",tip:"Colher antes de florescer."},
-  {id:"clorofito",name:"Clorofito",cat:"sombra",emoji:"🌿",sun:"Meia sombra",water:"Moderada",tip:"Filtra o ar. Fácil de se multiplicar."},
-  {id:"coleus",name:"Coleus",cat:"ornamentais",emoji:"🍂",sun:"Meia sombra",water:"Moderada",tip:"Folhagem colorida. Retirar flores para durar mais."},
-  {id:"confete",name:"Confete",cat:"ornamentais",emoji:"🌼",sun:"Sol/Meia",water:"Baixa",tip:"Muito resistente. Poucas exigências."},
-  {id:"cravo",name:"Cravo",cat:"ornamentais",emoji:"🌷",sun:"Sol pleno",water:"Moderada",tip:"Não deixar empapar. Fragância intensa."},
-  {id:"espada-sao-jorge",name:"Espada de São Jorge",cat:"sombra",emoji:"🗡️",sun:"Sombra/Meia",water:"Muito baixa",tip:"Praticamente infalível. Pouca água."},
-  {id:"falsa-erika",name:"Falsa Érika",cat:"ornamentais",emoji:"💐",sun:"Sol pleno",water:"Moderada",tip:"Boa poda mantém a forma arbustiva."},
-  {id:"geranio-pendente",name:"Gerânio Pendente",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Moderada",tip:"Ideal para vasos pendentes. Podar para reflorescer."},
-  {id:"gola-palhaco",name:"Gola de Palhaço",cat:"ornamentais",emoji:"🟢",sun:"Meia sombra",water:"Moderada",tip:"Folhagem variegada. Evitar sol direto forte."},
-  {id:"guine",name:"Guiné",cat:"aromáticas",emoji:"🌿",sun:"Sol/Meia",water:"Moderada",tip:"Repelente natural de insetos."},
-  {id:"hibisco",name:"Hibisco",cat:"ornamentais",emoji:"🌺",sun:"Sol pleno",water:"Alta",tip:"Flores grandes e efêmeras. Adora calor."},
-  {id:"hortela",name:"Hortelã",cat:"aromáticas",emoji:"🌿",sun:"Meia sombra",water:"Alta",tip:"Invasiva em canteiros. Melhor em vaso isolado."},
-  {id:"jiboia-pendente",name:"Jiboia Pendente",cat:"sombra",emoji:"🍃",sun:"Sombra/Meia",water:"Moderada",tip:"Enraíza fácil. Muito adaptável."},
-  {id:"ligustro-bonsai",name:"Ligustro Bonsai",cat:"ornamentais",emoji:"🌳",sun:"Sol pleno",water:"Moderada",tip:"Poda frequente para manter forma. Paciência."},
-  {id:"manjericao",name:"Manjericão",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",tip:"Retirar flores para prolongar colheita."},
-  {id:"mosquitinho",name:"Mosquitinho",cat:"ornamentais",emoji:"💨",sun:"Sol pleno",water:"Baixa",tip:"Florezinhas delicadas. Não encharcar."},
-  {id:"onze-horas",name:"Onze Horas",cat:"suculentas",emoji:"🌼",sun:"Sol pleno",water:"Baixa",tip:"Abre só com sol. Muito resistente ao calor."},
-  {id:"palmeira-raphis",name:"Palmeira Raphis",cat:"tropicais",emoji:"🌴",sun:"Meia sombra",water:"Moderada",tip:"(Ravi) Elegante. Cresce lentamente."},
-  {id:"pata-elefante",name:"Pata de Elefante",cat:"suculentas",emoji:"🐘",sun:"Sol pleno",water:"Muito baixa",tip:"Armazena água no tronco. Muito resistente."},
-  {id:"rosa-deserto",name:"Rosa do Deserto",cat:"suculentas",emoji:"🌸",sun:"Sol pleno",water:"Pouca",tip:"Não molhar folhas. Tronco é reservatório."},
-  {id:"samambaia",name:"Samambaia",cat:"sombra",emoji:"🌿",sun:"Sombra",water:"Alta",tip:"Borrifar folhas. Ama umidade constante."},
-  {id:"zamioculca",name:"Zamioculca",cat:"sombra",emoji:"🌿",sun:"Sombra/Meia",water:"Muito baixa",tip:"Quase indestrutível. Tolera negligência."},
-];
+let speciesMap={}, potsMap={};
+let curFilter='todas', curSearch='';
+let activeSpeciesId=null, activePotId=null;
+let addingPotForSpecies=null;
+let editSpeciesMode=false;
+let selEmoji='🌱';
 
-let plantsMap={}, curFilter='todas', curSearch='', activeId=null, selEmoji='🌱', editMode=false;
-const today=()=>new Date().toLocaleDateString('pt-BR');
+const today = () => new Date().toLocaleDateString('pt-BR');
+const todayISO = () => new Date().toISOString().split('T')[0];
 
-// online indicator
-window.addEventListener('online', ()=>setOnline(true));
+// Helpers
+function parseDate(str){
+  if(!str)return null;
+  if(str.includes('/')){const[d,m,y]=str.split('/');return new Date(y,m-1,d);}
+  return new Date(str);
+}
+function sortLog(log){
+  return [...(log||[])].sort((a,b)=>parseDate(a.date)-parseDate(b.date));
+}
+
+window.addEventListener('online',()=>setOnline(true));
 window.addEventListener('offline',()=>setOnline(false));
 function setOnline(on){
   const e=document.getElementById('onlineStatus');
@@ -317,77 +439,184 @@ function showSync(){
   b.classList.add('active');
   setTimeout(()=>b.classList.remove('active'),700);
 }
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
 
-// seed base plants on first load
-async function seed(snap){
-  if(!snap.empty)return;
-  for(const p of BASE){
-    await setDoc(doc(db,"plants",p.id),{name:p.name,cat:p.cat,emoji:p.emoji,sun:p.sun,water:p.water,tip:p.tip,note:'',log:[],watered:false,wateredDate:''});
+// SEED
+const BASE_SPECIES=[
+  {id:"agave-dragao",name:"Agave Dragão",cat:"suculentas",emoji:"🌵",sun:"Sol pleno",water:"Pouca",tip:"Resistente à seca. Não encharcar."},
+  {id:"agave-palito",name:"Agave Palito",cat:"suculentas",emoji:"🪴",sun:"Sol pleno",water:"Pouca",tip:"Folhas rígidas e afiadas. Drene bem."},
+  {id:"alecrim",name:"Alecrim",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",tip:"Ama sol. Ótimo para cozinha."},
+  {id:"alface-crespa",name:"Alface Crespa",cat:"comestíveis",emoji:"🥬",sun:"Meia sombra",water:"Alta",tip:"Colher folhas externas. Regar sempre."},
+  {id:"avenca",name:"Avenca",cat:"sombra",emoji:"🍃",sun:"Sombra",water:"Alta",tip:"Ama umidade. Proteger do vento."},
+  {id:"bougainvillea",name:"Bougainvillea",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Baixa",tip:"Floresce mais quando estressada."},
+  {id:"brinco-princesa",name:"Brinco de Princesa",cat:"ornamentais",emoji:"💜",sun:"Meia sombra",water:"Moderada",tip:"Floresce em ambientes frescos."},
+  {id:"bromelia",name:"Bromélia",cat:"tropicais",emoji:"🌺",sun:"Meia sombra",water:"Calice",tip:"Manter água no cálice central."},
+  {id:"cebolinha",name:"Cebolinha",cat:"comestíveis",emoji:"🧅",sun:"Sol pleno",water:"Moderada",tip:"Colher antes de florescer."},
+  {id:"clorofito",name:"Clorofito",cat:"sombra",emoji:"🌿",sun:"Meia sombra",water:"Moderada",tip:"Filtra o ar. Fácil de se multiplicar."},
+  {id:"coleus",name:"Coleus",cat:"ornamentais",emoji:"🍂",sun:"Meia sombra",water:"Moderada",tip:"Folhagem colorida. Retirar flores para durar mais."},
+  {id:"confete",name:"Confete",cat:"ornamentais",emoji:"🌼",sun:"Sol/Meia",water:"Baixa",tip:"Muito resistente. Poucas exigências."},
+  {id:"cravo",name:"Cravo",cat:"ornamentais",emoji:"🌷",sun:"Sol pleno",water:"Moderada",tip:"Não deixar empapar. Fragância intensa."},
+  {id:"espada-sao-jorge",name:"Espada de São Jorge",cat:"sombra",emoji:"🌿",sun:"Sombra/Meia",water:"Muito baixa",tip:"Praticamente infalível. Pouca água."},
+  {id:"falsa-erika",name:"Falsa Érika",cat:"ornamentais",emoji:"💐",sun:"Sol pleno",water:"Moderada",tip:"Boa poda mantém a forma arbustiva."},
+  {id:"geranio-pendente",name:"Gerânio Pendente",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Moderada",tip:"Ideal para vasos pendentes."},
+  {id:"gola-palhaco",name:"Gola de Palhaço",cat:"ornamentais",emoji:"🌿",sun:"Meia sombra",water:"Moderada",tip:"Folhagem variegada. Evitar sol direto forte."},
+  {id:"guine",name:"Guiné",cat:"aromáticas",emoji:"🌿",sun:"Sol/Meia",water:"Moderada",tip:"Repelente natural de insetos."},
+  {id:"hibisco",name:"Hibisco",cat:"ornamentais",emoji:"🌺",sun:"Sol pleno",water:"Alta",tip:"Flores grandes e efêmeras. Adora calor."},
+  {id:"hortela",name:"Hortelã",cat:"aromáticas",emoji:"🌿",sun:"Meia sombra",water:"Alta",tip:"Invasiva em canteiros. Melhor em vaso isolado."},
+  {id:"jiboia-pendente",name:"Jiboia Pendente",cat:"sombra",emoji:"🍃",sun:"Sombra/Meia",water:"Moderada",tip:"Enraíza fácil. Muito adaptável."},
+  {id:"ligustro-bonsai",name:"Ligustro Bonsai",cat:"ornamentais",emoji:"🌳",sun:"Sol pleno",water:"Moderada",tip:"Poda frequente para manter forma. Paciência."},
+  {id:"manjericao",name:"Manjericão",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",tip:"Retirar flores para prolongar colheita."},
+  {id:"mosquitinho",name:"Mosquitinho",cat:"ornamentais",emoji:"🌼",sun:"Sol pleno",water:"Baixa",tip:"Florezinhas delicadas. Não encharcar."},
+  {id:"onze-horas",name:"Onze Horas",cat:"suculentas",emoji:"🌼",sun:"Sol pleno",water:"Baixa",tip:"Abre só com sol. Muito resistente ao calor."},
+  {id:"palmeira-raphis",name:"Palmeira Raphis",cat:"tropicais",emoji:"🌴",sun:"Meia sombra",water:"Moderada",tip:"(Ravi) Elegante. Cresce lentamente."},
+  {id:"pata-elefante",name:"Pata de Elefante",cat:"suculentas",emoji:"🐘",sun:"Sol pleno",water:"Muito baixa",tip:"Armazena água no tronco. Muito resistente."},
+  {id:"rosa-deserto",name:"Rosa do Deserto",cat:"suculentas",emoji:"🌸",sun:"Sol pleno",water:"Pouca",tip:"Não molhar folhas. Tronco é reservatório."},
+  {id:"samambaia",name:"Samambaia",cat:"sombra",emoji:"🌿",sun:"Sombra",water:"Alta",tip:"Borrifar folhas. Ama umidade constante."},
+  {id:"zamioculca",name:"Zamioculca",cat:"sombra",emoji:"🌿",sun:"Sombra/Meia",water:"Muito baixa",tip:"Quase indestrutível. Tolera negligência."},
+];
+
+async function seed(){
+  const [sSnap, pSnap] = await Promise.all([getDocs(speciesCol), getDocs(potsCol)]);
+  if(!sSnap.empty) return; // already seeded
+  for(const s of BASE_SPECIES){
+    await setDoc(doc(db,"species",s.id),{name:s.name,cat:s.cat,emoji:s.emoji,sun:s.sun,water:s.water,tip:s.tip});
+    // create one default pot per species
+    const potId = s.id+'-vaso1';
+    await setDoc(doc(db,"pots",potId),{speciesId:s.id,potName:"Vaso 1",note:'',log:[],photos:[],reminders:[],watered:false,wateredDate:''});
   }
 }
 
-// realtime listener
-onSnapshot(col,async snap=>{
-  await seed(snap);
-  plantsMap={};
-  snap.forEach(d=>{plantsMap[d.id]={id:d.id,...d.data()};});
+// Real-time listeners
+onSnapshot(speciesCol, snap=>{
+  speciesMap={};
+  snap.forEach(d=>{speciesMap[d.id]={id:d.id,...d.data()};});
+  render();
+  showSync();
+});
+onSnapshot(potsCol, async snap=>{
+  potsMap={};
+  snap.forEach(d=>{potsMap[d.id]={id:d.id,...d.data()};});
   // reset watered for old days
   const t=today();
-  for(const[id,p]of Object.entries(plantsMap)){
-    if(p.watered&&p.wateredDate!==t) updateDoc(doc(db,"plants",id),{watered:false});
+  for(const[id,p] of Object.entries(potsMap)){
+    if(p.watered && p.wateredDate!==t) updateDoc(doc(db,"pots",id),{watered:false});
   }
   render();
-  if(activeId&&plantsMap[activeId])refreshCare(activeId);
+  if(activePotId && potsMap[activePotId]) refreshPotModal(activePotId);
   showSync();
 });
 
+// Seed on first load
+seed();
+
+function potsForSpecies(sid){ return Object.values(potsMap).filter(p=>p.speciesId===sid); }
+
 function lastOf(log,type){
   const a=(log||[]).filter(l=>l.type===type);
-  return a.length?a[a.length-1].date:null;
+  return a.length?sortLog(a)[a.length-1].date:null;
 }
-function chips(log){
+function potChips(log){
   const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert');
   let h='';
-  if(lr)h+=`<div class="hist-chip"><span class="dot dot-water"></span>Rega: ${lr}</div>`;
-  if(lp)h+=`<div class="hist-chip"><span class="dot dot-prune"></span>Poda: ${lp}</div>`;
-  if(lf)h+=`<div class="hist-chip"><span class="dot dot-fert"></span>Adub: ${lf}</div>`;
+  if(lr)h+=`<div class="pot-chip"><span class="dot dot-water"></span>${lr}</div>`;
+  if(lp)h+=`<div class="pot-chip"><span class="dot dot-prune"></span>${lp}</div>`;
+  if(lf)h+=`<div class="pot-chip"><span class="dot dot-fert"></span>${lf}</div>`;
   return h;
 }
+function hasOverdueReminder(pot){
+  const today=new Date(); today.setHours(0,0,0,0);
+  return (pot.reminders||[]).some(r=>{const d=new Date(r.date);d.setHours(0,0,0,0);return d<=today;});
+}
+
 function stats(){
-  const all=Object.values(plantsMap),t=today();
-  document.getElementById('totalCount').textContent=all.length;
-  document.getElementById('wateredCount').textContent=all.filter(p=>p.watered&&p.wateredDate===t).length;
-  document.getElementById('notesCount').textContent=all.filter(p=>p.note).length;
+  const allPots=Object.values(potsMap);
+  const t=today();
+  document.getElementById('totalCount').textContent=Object.keys(speciesMap).length;
+  document.getElementById('wateredCount').textContent=allPots.filter(p=>p.watered&&p.wateredDate===t).length;
+  // upcoming reminders (next 7 days + overdue)
+  const now=new Date();now.setHours(0,0,0,0);
+  const future=new Date(now);future.setDate(future.getDate()+7);
+  let rc=0;
+  allPots.forEach(p=>(p.reminders||[]).forEach(r=>{const d=new Date(r.date);d.setHours(0,0,0,0);if(d<=future)rc++;}));
+  document.getElementById('remindCount').textContent=rc;
 }
 
 function render(){
-  const g=document.getElementById('grid'),t=today();
-  const list=Object.values(plantsMap)
-    .filter(p=>(curFilter==='todas'||p.cat===curFilter)&&p.name.toLowerCase().includes(curSearch.toLowerCase()))
+  const g=document.getElementById('speciesGroups');
+  const t=today();
+  const speciesList=Object.values(speciesMap)
+    .filter(s=>(curFilter==='todas'||s.cat===curFilter)&&s.name.toLowerCase().includes(curSearch.toLowerCase()))
     .sort((a,b)=>a.name.localeCompare(b.name,'pt'));
+
   g.innerHTML='';
-  if(!list.length){g.innerHTML='<div class="empty">Nenhuma planta encontrada…</div>';stats();return;}
-  list.forEach((p,i)=>{
-    const isW=p.watered&&p.wateredDate===t;
-    const c=document.createElement('div');
-    c.className='card'+(isW?' watered':'');
-    c.style.animationDelay=(i*.03)+'s';
-    c.innerHTML=`<div class="water-badge">💧</div>
-      <span class="card-emoji">${p.emoji}${p.note?'<sup style="font-size:.55rem">📝</sup>':''}</span>
-      <div class="card-name">${p.name}</div>
-      <div class="card-type">${p.cat}</div>
-      <div class="card-history">${chips(p.log)}</div>
-      <div class="card-actions"><button class="btn-water ${isW?'watered-btn':''}">${isW?'✓ Regada':'💧 Regar'}</button></div>`;
-    c.querySelector('.btn-water').addEventListener('click',e=>{e.stopPropagation();toggleWater(p.id);});
-    c.addEventListener('click',()=>openDetail(p.id));
-    g.appendChild(c);
+  if(!speciesList.length){g.innerHTML='<div class="empty">Nenhuma planta encontrada…</div>';stats();return;}
+
+  speciesList.forEach((s,si)=>{
+    const pots=potsForSpecies(s.id);
+    const anyOverdue=pots.some(p=>hasOverdueReminder(p));
+    const div=document.createElement('div');
+    div.className='species-group';
+    div.style.animationDelay=(si*.04)+'s';
+    const wateredCnt=pots.filter(p=>p.watered&&p.wateredDate===t).length;
+    div.innerHTML=`
+      <div class="species-header" data-sid="${s.id}">
+        <span class="species-emoji">${s.emoji}</span>
+        <div class="species-meta">
+          <div class="species-name">${s.name}</div>
+          <div class="species-cat">${s.cat}${pots.length>0?` · ${wateredCnt}/${pots.length} regados`:''}</div>
+        </div>
+        <div class="species-badges">
+          ${pots.length>1?`<span class="badge-pots">${pots.length} vasos</span>`:''}
+          ${anyOverdue?`<span class="badge-remind">⏰</span>`:''}
+          <span style="color:var(--sage);font-size:1.1rem">›</span>
+        </div>
+      </div>
+      <div class="pots-row" id="pots-${s.id}"></div>`;
+    g.appendChild(div);
+
+    // edit species on header click
+    div.querySelector('.species-header').addEventListener('click',()=>openEditSpecies(s.id));
+
+    // render pots
+    const potsRow=div.querySelector(`#pots-${s.id}`);
+    pots.sort((a,b)=>a.potName.localeCompare(b.potName,'pt')).forEach(p=>{
+      const isW=p.watered&&p.wateredDate===t;
+      const overdue=hasOverdueReminder(p);
+      const lastPhoto=(p.photos||[]).slice(-1)[0];
+      const pc=document.createElement('div');
+      pc.className='pot-card'+(isW?' watered':'');
+      pc.innerHTML=`
+        <div class="water-badge">💧</div>
+        ${overdue?'<div class="remind-dot"></div>':''}
+        ${lastPhoto
+          ?`<img class="pot-photo" src="${lastPhoto.data}" alt="">`
+          :`<div class="pot-photo-placeholder">${s.emoji}</div>`}
+        <div class="pot-name">${p.potName}</div>
+        <div class="pot-hist">${potChips(p.log)}</div>
+        <button class="pot-water-btn${isW?' watered-btn':''}">${isW?'✓ Regado':'💧 Regar'}</button>`;
+      pc.querySelector('.pot-water-btn').addEventListener('click',e=>{e.stopPropagation();toggleWater(p.id);});
+      pc.addEventListener('click',()=>openPotDetail(p.id));
+      potsRow.appendChild(pc);
+    });
+
+    // add pot button
+    const addPotBtn=document.createElement('button');
+    addPotBtn.className='btn-add-pot';
+    addPotBtn.innerHTML='<span>+</span>Novo vaso';
+    addPotBtn.addEventListener('click',e=>{e.stopPropagation();openAddPot(s.id);});
+    potsRow.appendChild(addPotBtn);
   });
   stats();
 }
 
-async function toggleWater(id){
-  const p=plantsMap[id];if(!p)return;
-  const t=today(),r=doc(db,"plants",id);
+// ── Water ──
+async function toggleWater(potId){
+  const p=potsMap[potId];if(!p)return;
+  const t=today(),r=doc(db,"pots",potId);
   if(p.watered&&p.wateredDate===t){
     const lw=[...(p.log||[])].reverse().find(l=>l.type==='water'&&l.date===t);
     const u={watered:false};
@@ -399,34 +628,122 @@ async function toggleWater(id){
   }
 }
 
-async function addLog(id,type,dateStr){
+// Water ALL visible pots
+document.getElementById('btnWaterAll').addEventListener('click',async()=>{
+  const t=today();
+  const visibleSpecies=Object.values(speciesMap)
+    .filter(s=>(curFilter==='todas'||s.cat===curFilter)&&s.name.toLowerCase().includes(curSearch.toLowerCase()));
+  const visIds=new Set(visibleSpecies.map(s=>s.id));
+  const pots=Object.values(potsMap).filter(p=>visIds.has(p.speciesId));
+  let count=0;
+  for(const p of pots){
+    if(!(p.watered&&p.wateredDate===t)){
+      const e={type:'water',date:t,ts:Date.now()};
+      await updateDoc(doc(db,"pots",p.id),{watered:true,wateredDate:t,log:arrayUnion(e)});
+      count++;
+    }
+  }
+  toast(`💧 ${count} vaso${count!==1?'s':''} regado${count!==1?'s':''}!`);
+});
+
+// ── Add log ──
+async function addLog(potId,type,dateStr){
   const e={type,date:dateStr,ts:Date.now()};
   const u={log:arrayUnion(e)};
   if(type==='water'){u.watered=true;u.wateredDate=dateStr;}
-  await updateDoc(doc(db,"plants",id),u);
+  await updateDoc(doc(db,"pots",potId),u);
 }
 
-function openDetail(id){
-  activeId=id;
-  const p=plantsMap[id];if(!p)return;
-  document.getElementById('mEmoji').textContent=p.emoji;
-  document.getElementById('mName').textContent=p.name;
-  document.getElementById('mType').textContent=p.cat;
+// ── Open pot detail ──
+function openPotDetail(potId){
+  activePotId=potId;
+  const p=potsMap[potId];if(!p)return;
+  const s=speciesMap[p.speciesId]||{};
+  document.getElementById('mEmoji').textContent=s.emoji||'🌱';
+  document.getElementById('mName').textContent=`${s.name||'Planta'} — ${p.potName}`;
+  document.getElementById('mType').textContent=s.cat||'';
   document.getElementById('noteArea').value=p.note||'';
   document.getElementById('mInfo').innerHTML=`
-    <div class="info-row"><span class="info-icon">${sIco[p.sun]||'☀️'}</span><span class="info-text"><strong>Luz:</strong> ${p.sun}</span></div>
-    <div class="info-row"><span class="info-icon">${wIco[p.water]||'💧'}</span><span class="info-text"><strong>Rega:</strong> ${p.water}</span></div>
-    <div class="info-row"><span class="info-icon">💡</span><span class="info-text">${p.tip}</span></div>`;
+    <div class="info-row"><span class="info-icon">${sIco[s.sun]||'☀️'}</span><span class="info-text"><strong>Luz:</strong> ${s.sun||'–'}</span></div>
+    <div class="info-row"><span class="info-icon">${wIco[s.water]||'💧'}</span><span class="info-text"><strong>Rega:</strong> ${s.water||'–'}</span></div>
+    <div class="info-row"><span class="info-icon">💡</span><span class="info-text">${s.tip||''}</span></div>`;
   document.getElementById('backdatePanel').classList.remove('open');
   document.getElementById('btnToggleBackdate').textContent='📅 Registrar data passada';
   const y=new Date();y.setDate(y.getDate()-1);
   document.getElementById('backdateDate').value=y.toISOString().split('T')[0];
-  refreshCare(id);
+  // remind date default: tomorrow
+  const tom=new Date();tom.setDate(tom.getDate()+1);
+  document.getElementById('remindDate').value=tom.toISOString().split('T')[0];
+  refreshPotModal(potId);
   document.getElementById('detailModal').classList.add('open');
 }
 
-function refreshCare(id){
-  const p=plantsMap[id];if(!p)return;
+function refreshPotModal(potId){
+  const p=potsMap[potId];if(!p)return;
+  refreshPhotos(p);
+  refreshCare(p);
+  refreshHistory(p);
+  refreshReminders(p);
+}
+
+// Photos
+function refreshPhotos(p){
+  const gallery=document.getElementById('photoGallery');
+  gallery.innerHTML='';
+  (p.photos||[]).forEach(ph=>{
+    const wrap=document.createElement('div');
+    wrap.className='photo-thumb-wrap';
+    wrap.innerHTML=`<img class="photo-thumb" src="${ph.data}" alt="">
+      <div class="photo-thumb-date">${ph.date}</div>
+      <button class="photo-del" data-pid="${ph.id}">✕</button>`;
+    wrap.querySelector('img').addEventListener('click',()=>openLightbox(ph.data,ph.date));
+    wrap.querySelector('.photo-del').addEventListener('click',async()=>{
+      await updateDoc(doc(db,"pots",p.id),{photos:arrayRemove(ph)});
+    });
+    gallery.appendChild(wrap);
+  });
+  const addBtn=document.createElement('button');
+  addBtn.className='btn-photo-add';
+  addBtn.innerHTML='<span>📷</span>Foto';
+  addBtn.addEventListener('click',()=>document.getElementById('photoInput').click());
+  gallery.appendChild(addBtn);
+}
+
+document.getElementById('photoInput').addEventListener('change',async e=>{
+  const file=e.target.files[0];if(!file||!activePotId)return;
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    // Compress image
+    const img=new Image();
+    img.onload=async()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=600;
+      let w=img.width,h=img.height;
+      if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const data=canvas.toDataURL('image/jpeg',0.75);
+      const photo={id:Date.now().toString(),data,date:today(),ts:Date.now()};
+      await updateDoc(doc(db,"pots",activePotId),{photos:arrayUnion(photo)});
+      toast('📸 Foto salva!');
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+});
+
+// Lightbox
+function openLightbox(src,date){
+  document.getElementById('lbImg').src=src;
+  document.getElementById('lbDate').textContent=date;
+  document.getElementById('lightbox').classList.add('open');
+}
+document.getElementById('lbClose').addEventListener('click',()=>document.getElementById('lightbox').classList.remove('open'));
+document.getElementById('lightbox').addEventListener('click',e=>{if(e.target.id==='lightbox')document.getElementById('lightbox').classList.remove('open');});
+
+// Care
+function refreshCare(p){
   const log=p.log||[];
   const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert');
   const pts=[];
@@ -434,75 +751,125 @@ function refreshCare(id){
   document.getElementById('careLast').innerHTML=pts.length
     ?pts.map(x=>`<span style="margin-right:.8rem">${x}</span>`).join('')
     :'<span style="color:#bbb;font-style:italic">Nenhum registro ainda.</span>';
+}
+
+// History — chronological order
+function refreshHistory(p){
   const box=document.getElementById('historyBox');
-  const sorted=[...log].sort((a,b)=>b.ts-a.ts);
+  const sorted=sortLog(p.log||[]).reverse(); // newest first in display
   if(!sorted.length){box.innerHTML='<div class="log-empty">Sem registros ainda.</div>';return;}
   box.innerHTML=sorted.map(e=>`
     <div class="log-item">
       <span class="log-icon">${e.type==='water'?'💧':e.type==='prune'?'✂️':'🌱'}</span>
-      <span class="log-text">${cLbl[e.type]}</span>
+      <span class="log-text">${cLbl[e.type]||e.type}</span>
       <span class="log-date">${e.date}</span>
-      <button class="log-del" data-id="${id}" data-type="${e.type}" data-date="${e.date}" data-ts="${e.ts}">✕</button>
+      <button class="log-del" data-type="${e.type}" data-date="${e.date}" data-ts="${e.ts}">✕</button>
     </div>`).join('');
   box.querySelectorAll('.log-del').forEach(b=>{
     b.addEventListener('click',async()=>{
       const entry={type:b.dataset.type,date:b.dataset.date,ts:parseInt(b.dataset.ts)};
-      await updateDoc(doc(db,"plants",b.dataset.id),{log:arrayRemove(entry)});
+      await updateDoc(doc(db,"pots",activePotId),{log:arrayRemove(entry)});
     });
   });
 }
 
+// Reminders
+function refreshReminders(p){
+  const list=document.getElementById('remindList');
+  const rems=(p.reminders||[]).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const today=new Date();today.setHours(0,0,0,0);
+  if(!rems.length){list.innerHTML='<div style="font-size:.75rem;color:#bbb;font-style:italic;margin-bottom:.4rem">Sem lembretes.</div>';return;}
+  list.innerHTML=rems.map(r=>{
+    const d=new Date(r.date);d.setHours(0,0,0,0);
+    const overdue=d<=today;
+    const [y,m,dy]=r.date.split('-');
+    const fmt=`${dy}/${m}/${y}`;
+    return `<div class="remind-item${overdue?' overdue':''}">
+      <span class="remind-icon">${remindIco[r.type]||'📝'}</span>
+      <span class="remind-label">${r.note||cLbl[r.type]||r.type}</span>
+      <span class="remind-date">${fmt}${overdue?' ⚠️':''}</span>
+      <button class="remind-del" data-rid="${r.id}">✕</button>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('.remind-del').forEach(b=>{
+    b.addEventListener('click',async()=>{
+      const rem=(p.reminders||[]).find(r=>r.id===b.dataset.rid);
+      if(rem)await updateDoc(doc(db,"pots",activePotId),{reminders:arrayRemove(rem)});
+    });
+  });
+}
+
+document.getElementById('btnRemindAdd').addEventListener('click',async()=>{
+  if(!activePotId)return;
+  const date=document.getElementById('remindDate').value;
+  if(!date){document.getElementById('remindDate').focus();return;}
+  const rem={
+    id:Date.now().toString(),
+    type:document.getElementById('remindType').value,
+    note:document.getElementById('remindNote').value.trim(),
+    date,
+    ts:Date.now()
+  };
+  await updateDoc(doc(db,"pots",activePotId),{reminders:arrayUnion(rem)});
+  document.getElementById('remindNote').value='';
+  toast('🔔 Lembrete adicionado!');
+});
+
+// Care buttons
 ['Water','Prune','Fert'].forEach(c=>{
   document.getElementById('care'+c).addEventListener('click',async()=>{
-    if(!activeId)return;
-    await addLog(activeId,c.toLowerCase(),today());
+    if(!activePotId)return;
+    await addLog(activePotId,c.toLowerCase(),today());
   });
 });
 
+// Backdate
 document.getElementById('btnToggleBackdate').addEventListener('click',()=>{
-  const p=document.getElementById('backdatePanel');
-  const o=p.classList.toggle('open');
-  document.getElementById('btnToggleBackdate').textContent=o?'▲ Fechar':'📅 Registrar data passada';
+  const panel=document.getElementById('backdatePanel');
+  const open=panel.classList.toggle('open');
+  document.getElementById('btnToggleBackdate').textContent=open?'▲ Fechar':'📅 Registrar data passada';
 });
 document.getElementById('btnBackdateSave').addEventListener('click',async()=>{
-  if(!activeId)return;
+  if(!activePotId)return;
   const type=document.getElementById('backdateType').value;
   const raw=document.getElementById('backdateDate').value;if(!raw)return;
   const[y,m,d]=raw.split('-');
-  await addLog(activeId,type,`${d}/${m}/${y}`);
+  await addLog(activePotId,type,`${d}/${m}/${y}`);
   document.getElementById('backdatePanel').classList.remove('open');
   document.getElementById('btnToggleBackdate').textContent='📅 Registrar data passada';
+  toast('✅ Cuidado registrado!');
 });
 
+// Save note
 document.getElementById('btnSave').addEventListener('click',async()=>{
-  if(!activeId)return;
-  await updateDoc(doc(db,"plants",activeId),{note:document.getElementById('noteArea').value});
+  if(!activePotId)return;
+  await updateDoc(doc(db,"pots",activePotId),{note:document.getElementById('noteArea').value});
   document.getElementById('detailModal').classList.remove('open');
+  toast('💾 Nota salva!');
 });
-document.getElementById('btnEditPlant').addEventListener('click',()=>{
-  const p=plantsMap[activeId];if(!p)return;
-  editMode=true;
-  document.getElementById('addModalTitle').textContent='✏️ Editar Planta';
-  document.getElementById('newName').value=p.name;
-  document.getElementById('newCat').value=p.cat;
-  document.getElementById('newSun').value=p.sun;
-  document.getElementById('newWater').value=p.water;
-  document.getElementById('newTip').value=p.tip;
-  selEmoji=p.emoji;
-  document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.toggle('selected',x.dataset.e===selEmoji));
+
+// Rename pot
+document.getElementById('btnEditPot').addEventListener('click',()=>{
+  if(!activePotId)return;
+  const p=potsMap[activePotId];
+  const name=prompt('Novo nome para o vaso:',p.potName);
+  if(name&&name.trim()) updateDoc(doc(db,"pots",activePotId),{potName:name.trim()});
+});
+
+// Delete pot
+document.getElementById('btnDelPot').addEventListener('click',async()=>{
+  const p=potsMap[activePotId];
+  if(!p||!confirm(`Remover vaso "${p.potName}"?`))return;
+  await deleteDoc(doc(db,"pots",activePotId));
   document.getElementById('detailModal').classList.remove('open');
-  document.getElementById('addModal').classList.add('open');
+  toast('🗑 Vaso removido.');
 });
-document.getElementById('btnDelPlant').addEventListener('click',async()=>{
-  const p=plantsMap[activeId];
-  if(!p||!confirm(`Remover "${p.name}"?`))return;
-  await deleteDoc(doc(db,"plants",activeId));
-  document.getElementById('detailModal').classList.remove('open');
-});
+
+// Close
 document.getElementById('btnClose').addEventListener('click',()=>document.getElementById('detailModal').classList.remove('open'));
 document.getElementById('detailModal').addEventListener('click',e=>{if(e.target.id==='detailModal')document.getElementById('detailModal').classList.remove('open');});
 
-// emoji picker
+// ── Add/Edit Species ──
 (()=>{
   const pk=document.getElementById('emojiPicker');
   pk.innerHTML=EMOJIS.map(e=>`<span class="emoji-opt${e===selEmoji?' selected':''}" data-e="${e}">${e}</span>`).join('');
@@ -514,17 +881,37 @@ document.getElementById('detailModal').addEventListener('click',e=>{if(e.target.
 })();
 
 document.getElementById('btnOpenAdd').addEventListener('click',()=>{
-  editMode=false;
-  document.getElementById('addModalTitle').textContent='✨ Nova Planta';
+  editSpeciesMode=false;
+  activeSpeciesId=null;
+  document.getElementById('addModalTitle').textContent='✨ Nova Espécie';
   document.getElementById('newName').value='';
   document.getElementById('newTip').value='';
+  document.getElementById('btnDelSpecies').style.display='none';
   selEmoji='🌱';
   document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.toggle('selected',x.dataset.e==='🌱'));
   document.getElementById('addModal').classList.add('open');
   setTimeout(()=>document.getElementById('newName').focus(),300);
 });
+
+function openEditSpecies(sid){
+  const s=speciesMap[sid];if(!s)return;
+  editSpeciesMode=true;
+  activeSpeciesId=sid;
+  document.getElementById('addModalTitle').textContent='✏️ Editar Espécie';
+  document.getElementById('newName').value=s.name;
+  document.getElementById('newCat').value=s.cat;
+  document.getElementById('newSun').value=s.sun;
+  document.getElementById('newWater').value=s.water;
+  document.getElementById('newTip').value=s.tip;
+  selEmoji=s.emoji;
+  document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.toggle('selected',x.dataset.e===selEmoji));
+  document.getElementById('btnDelSpecies').style.display='block';
+  document.getElementById('addModal').classList.add('open');
+}
+
 document.getElementById('btnAddClose').addEventListener('click',()=>document.getElementById('addModal').classList.remove('open'));
 document.getElementById('addModal').addEventListener('click',e=>{if(e.target.id==='addModal')document.getElementById('addModal').classList.remove('open');});
+
 document.getElementById('btnAddSave').addEventListener('click',async()=>{
   const name=document.getElementById('newName').value.trim();
   if(!name){document.getElementById('newName').focus();return;}
@@ -536,15 +923,49 @@ document.getElementById('btnAddSave').addEventListener('click',async()=>{
     water:document.getElementById('newWater').value,
     tip:document.getElementById('newTip').value.trim()||'Sem dicas cadastradas.',
   };
-  if(editMode&&activeId){
-    await updateDoc(doc(db,"plants",activeId),data);
+  if(editSpeciesMode&&activeSpeciesId){
+    await updateDoc(doc(db,"species",activeSpeciesId),data);
   }else{
-    const id=name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'-'+Date.now();
-    await setDoc(doc(db,"plants",id),{...data,note:'',log:[],watered:false,wateredDate:''});
+    const sid=name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'-'+Date.now();
+    await setDoc(doc(db,"species",sid),data);
+    // create first pot automatically
+    const potId=sid+'-vaso1';
+    await setDoc(doc(db,"pots",potId),{speciesId:sid,potName:"Vaso 1",note:'',log:[],photos:[],reminders:[],watered:false,wateredDate:''});
+    toast('🌱 Espécie adicionada!');
   }
   document.getElementById('addModal').classList.remove('open');
 });
 
+document.getElementById('btnDelSpecies').addEventListener('click',async()=>{
+  const s=speciesMap[activeSpeciesId];
+  if(!s||!confirm(`Remover "${s.name}" e todos seus vasos?`))return;
+  const pots=potsForSpecies(activeSpeciesId);
+  for(const p of pots) await deleteDoc(doc(db,"pots",p.id));
+  await deleteDoc(doc(db,"species",activeSpeciesId));
+  document.getElementById('addModal').classList.remove('open');
+  toast('🗑 Espécie removida.');
+});
+
+// ── Add Pot ──
+function openAddPot(sid){
+  addingPotForSpecies=sid;
+  document.getElementById('potName').value='';
+  document.getElementById('potModal').classList.add('open');
+  setTimeout(()=>document.getElementById('potName').focus(),300);
+}
+document.getElementById('btnPotClose').addEventListener('click',()=>document.getElementById('potModal').classList.remove('open'));
+document.getElementById('potModal').addEventListener('click',e=>{if(e.target.id==='potModal')document.getElementById('potModal').classList.remove('open');});
+document.getElementById('btnPotSave').addEventListener('click',async()=>{
+  const name=document.getElementById('potName').value.trim();
+  if(!name){document.getElementById('potName').focus();return;}
+  if(!addingPotForSpecies)return;
+  const potId=addingPotForSpecies+'-'+Date.now();
+  await setDoc(doc(db,"pots",potId),{speciesId:addingPotForSpecies,potName:name,note:'',log:[],photos:[],reminders:[],watered:false,wateredDate:''});
+  document.getElementById('potModal').classList.remove('open');
+  toast('🪴 Vaso adicionado!');
+});
+
+// Search & filter
 document.getElementById('searchInput').addEventListener('input',e=>{curSearch=e.target.value;render();});
 document.querySelectorAll('.filter-btn').forEach(b=>{
   b.addEventListener('click',()=>{
