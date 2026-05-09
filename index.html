@@ -46,8 +46,15 @@
   .species-groups{display:flex;flex-direction:column;gap:1.4rem;padding:1rem 1.5rem 3rem;max-width:900px;margin:0 auto}
   .species-group{background:white;border-radius:18px;border:1.5px solid var(--mist);overflow:hidden;animation:fadeUp .4s ease both}
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-  .species-header{display:flex;align-items:center;gap:.8rem;padding:1rem 1.2rem .7rem;cursor:pointer;user-select:none}
+  .species-header{display:flex;align-items:center;gap:.8rem;padding:.75rem 1.2rem .7rem;cursor:pointer;user-select:none;position:relative}
   .species-header:hover{background:rgba(212,224,210,.15)}
+  /* Cover image in header */
+  .species-cover-wrap{position:relative;flex-shrink:0;width:52px;height:52px;border-radius:12px;overflow:hidden;background:var(--mist);display:flex;align-items:center;justify-content:center}
+  .species-cover-img{width:100%;height:100%;object-fit:cover;display:block}
+  .species-cover-emoji{font-size:1.8rem;line-height:1}
+  .species-cover-btn{position:absolute;inset:0;background:rgba(0,0,0,.0);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;cursor:pointer;border:none;border-radius:12px}
+  .species-cover-wrap:hover .species-cover-btn{opacity:1;background:rgba(0,0,0,.35)}
+  .species-cover-btn span{font-size:.9rem;color:white;line-height:1}
   .species-emoji{font-size:1.8rem;line-height:1}
   .species-meta{flex:1;min-width:0}
   .species-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--ink);line-height:1.2}
@@ -253,6 +260,7 @@
     <div class="section-title">📸 Fotos do vaso</div>
     <div class="photo-gallery" id="photoGallery"></div>
     <input type="file" id="photoInput" accept="image/*" capture="environment">
+<input type="file" id="coverInput" accept="image/*" capture="environment">
 
     <!-- Care -->
     <div class="section-title">Registrar cuidado</div>
@@ -356,6 +364,13 @@
       <label>Emoji</label>
       <div class="emoji-picker" id="emojiPicker"></div>
     </div>
+    <div class="form-group" id="coverPreviewGroup" style="display:none">
+      <label>Foto de capa atual</label>
+      <div style="display:flex;align-items:center;gap:.7rem">
+        <img id="coverPreviewImg" src="" style="width:60px;height:60px;object-fit:cover;border-radius:10px;border:1.5px solid var(--mist)">
+        <button type="button" id="btnRemoveCover" style="font-size:.75rem;color:var(--red);background:white;border:1.5px solid #e8c8c4;border-radius:8px;padding:.35rem .7rem;cursor:pointer;font-family:'DM Sans',sans-serif">🗑 Remover capa</button>
+      </div>
+    </div>
     <div class="modal-btns" style="margin-top:.8rem">
       <button class="btn-close" id="btnAddClose">Cancelar</button>
       <button class="btn-save" id="btnAddSave">Salvar</button>
@@ -413,6 +428,7 @@ let activeSpeciesId=null, activePotId=null;
 let addingPotForSpecies=null;
 let editSpeciesMode=false;
 let selEmoji='🌱';
+let activeCoverSpeciesId=null;
 
 const today = () => new Date().toLocaleDateString('pt-BR');
 const todayISO = () => new Date().toISOString().split('T')[0];
@@ -564,7 +580,12 @@ function render(){
     const wateredCnt=pots.filter(p=>p.watered&&p.wateredDate===t).length;
     div.innerHTML=`
       <div class="species-header" data-sid="${s.id}">
-        <span class="species-emoji">${s.emoji}</span>
+        <div class="species-cover-wrap" data-sid="${s.id}">
+          ${s.cover
+            ?`<img class="species-cover-img" src="${s.cover}" alt="">`
+            :`<span class="species-cover-emoji">${s.emoji}</span>`}
+          <button class="species-cover-btn" title="Trocar capa"><span>📷</span></button>
+        </div>
         <div class="species-meta">
           <div class="species-name">${s.name}</div>
           <div class="species-cat">${s.cat}${pots.length>0?` · ${wateredCnt}/${pots.length} regados`:''}</div>
@@ -578,8 +599,18 @@ function render(){
       <div class="pots-row" id="pots-${s.id}"></div>`;
     g.appendChild(div);
 
-    // edit species on header click
-    div.querySelector('.species-header').addEventListener('click',()=>openEditSpecies(s.id));
+    // cover photo button — stop propagation so it doesn't open edit modal
+    div.querySelector('.species-cover-btn').addEventListener('click',e=>{
+      e.stopPropagation();
+      activeCoverSpeciesId=s.id;
+      document.getElementById('coverInput').click();
+    });
+
+    // edit species on header click (but not on cover button)
+    div.querySelector('.species-header').addEventListener('click',e=>{
+      if(e.target.closest('.species-cover-wrap'))return;
+      openEditSpecies(s.id);
+    });
 
     // render pots
     const potsRow=div.querySelector(`#pots-${s.id}`);
@@ -709,7 +740,32 @@ function refreshPhotos(p){
   gallery.appendChild(addBtn);
 }
 
-document.getElementById('photoInput').addEventListener('change',async e=>{
+document.getElementById('coverInput').addEventListener('change',async e=>{
+  const file=e.target.files[0];if(!file||!activeCoverSpeciesId)return;
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    const img=new Image();
+    img.onload=async()=>{
+      const canvas=document.createElement('canvas');
+      // cover: wider crop, 400×400
+      const SIZE=400;
+      let w=img.width,h=img.height;
+      const side=Math.min(w,h);
+      const canvas2=document.createElement('canvas');
+      canvas2.width=SIZE;canvas2.height=SIZE;
+      const ctx=canvas2.getContext('2d');
+      // center-crop to square
+      const sx=(w-side)/2,sy=(h-side)/2;
+      ctx.drawImage(img,sx,sy,side,side,0,0,SIZE,SIZE);
+      const data=canvas2.toDataURL('image/jpeg',0.80);
+      await updateDoc(doc(db,"species",activeCoverSpeciesId),{cover:data});
+      toast('🖼️ Foto de capa salva!');
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+});
   const file=e.target.files[0];if(!file||!activePotId)return;
   const reader=new FileReader();
   reader.onload=async ev=>{
@@ -887,6 +943,7 @@ document.getElementById('btnOpenAdd').addEventListener('click',()=>{
   document.getElementById('newName').value='';
   document.getElementById('newTip').value='';
   document.getElementById('btnDelSpecies').style.display='none';
+  document.getElementById('coverPreviewGroup').style.display='none';
   selEmoji='🌱';
   document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.toggle('selected',x.dataset.e==='🌱'));
   document.getElementById('addModal').classList.add('open');
@@ -906,6 +963,13 @@ function openEditSpecies(sid){
   selEmoji=s.emoji;
   document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.toggle('selected',x.dataset.e===selEmoji));
   document.getElementById('btnDelSpecies').style.display='block';
+  // cover preview
+  if(s.cover){
+    document.getElementById('coverPreviewGroup').style.display='block';
+    document.getElementById('coverPreviewImg').src=s.cover;
+  }else{
+    document.getElementById('coverPreviewGroup').style.display='none';
+  }
   document.getElementById('addModal').classList.add('open');
 }
 
@@ -963,6 +1027,14 @@ document.getElementById('btnPotSave').addEventListener('click',async()=>{
   await setDoc(doc(db,"pots",potId),{speciesId:addingPotForSpecies,potName:name,note:'',log:[],photos:[],reminders:[],watered:false,wateredDate:''});
   document.getElementById('potModal').classList.remove('open');
   toast('🪴 Vaso adicionado!');
+});
+
+// Remove cover
+document.getElementById('btnRemoveCover').addEventListener('click',async()=>{
+  if(!activeSpeciesId)return;
+  await updateDoc(doc(db,"species",activeSpeciesId),{cover:''});
+  document.getElementById('coverPreviewGroup').style.display='none';
+  toast('🗑 Foto de capa removida.');
 });
 
 // Search & filter
