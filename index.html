@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Minhas Plantas 🌿</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{--ink:#1a1a14;--cream:#f5f0e8;--sage:#7a9e7e;--moss:#4a6741;--terra:#c17a4a;--mist:#d4e0d2;--gold:#b8965a;--red:#c0392b;--blue:#6ba3be}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -190,7 +191,16 @@
   .emoji-opt:hover{background:var(--mist)}
   .emoji-opt.selected{border-color:var(--sage);background:var(--mist)}
 
-  /* Toast */
+  /* ─── Estatísticas de frequência ─── */
+  .freq-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem}
+  .freq-card{background:white;border-radius:12px;padding:.7rem .6rem;border:1.5px solid var(--mist);text-align:center}
+  .freq-icon{font-size:1.3rem;line-height:1;margin-bottom:.2rem}
+  .freq-label{font-size:.6rem;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.3rem}
+  .freq-val{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--moss);line-height:1}
+  .freq-unit{font-size:.62rem;color:#888;margin-top:.1rem}
+  .freq-sub{font-size:.65rem;color:#aaa;margin-top:.25rem;line-height:1.35}
+
+
   #toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:white;padding:.55rem 1.2rem;border-radius:50px;font-size:.8rem;font-family:'DM Sans',sans-serif;z-index:900;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -275,6 +285,7 @@
   </div>
   <div class="action-row">
     <button class="btn-water-all" id="btnWaterAll">💧 Regar todas</button>
+    <button class="btn-water-all" id="btnExportXlsx" style="border-color:var(--gold);color:var(--gold)">📊 Exportar Excel</button>
   </div>
   <div class="filters">
     <button class="filter-btn active" data-cat="todas">Todas</button>
@@ -349,6 +360,10 @@
     <div class="photo-gallery" id="photoGallery"></div>
     <input type="file" id="photoInput" accept="image/*" capture="environment">
     <input type="file" id="coverInput" accept="image/*" capture="environment">
+
+    <!-- Estatísticas de frequência -->
+    <div class="section-title" style="margin-top:.2rem">📈 Frequências médias</div>
+    <div class="freq-grid" id="freqGrid"></div>
 
     <!-- Care -->
     <div class="section-title">Registrar cuidado</div>
@@ -945,6 +960,7 @@ function openPotDetail(potId){
 function refreshPotModal(potId){
   const p=potsMap[potId];if(!p)return;
   refreshPhotos(p);
+  refreshFreqStats(p);
   refreshCare(p);
   refreshHistory(p);
   refreshReminders(p);
@@ -1265,6 +1281,160 @@ document.getElementById('btnRemoveCover').addEventListener('click',async()=>{
   await updateDoc(doc(db,"species",activeSpeciesId),{cover:''});
   document.getElementById('coverPreviewGroup').style.display='none';
   toast('🗑 Foto de capa removida.');
+});
+
+// ══════════════════════════════════════════════
+// ESTATÍSTICAS DE FREQUÊNCIA
+// ══════════════════════════════════════════════
+function calcFreq(log, type){
+  // Returns { avgDays, total, last, nextEst }
+  const entries = sortLog((log||[]).filter(e=>e.type===type));
+  const total = entries.length;
+  if(total === 0) return {avgDays:null, total:0, last:null, nextEst:null};
+  const last = entries[total-1].date;
+  if(total === 1) return {avgDays:null, total:1, last, nextEst:null};
+  // calc intervals
+  const intervals = [];
+  for(let i=1;i<entries.length;i++){
+    const a=parseDate(entries[i-1].date), b=parseDate(entries[i].date);
+    const diff=Math.round((b-a)/(1000*60*60*24));
+    if(diff>0) intervals.push(diff);
+  }
+  if(!intervals.length) return {avgDays:null, total, last, nextEst:null};
+  const avg = Math.round(intervals.reduce((s,v)=>s+v,0)/intervals.length);
+  // estimate next
+  const lastDate = parseDate(last);
+  const nextDate = new Date(lastDate.getTime() + avg*24*60*60*1000);
+  const nextEst = nextDate.toLocaleDateString('pt-BR');
+  return {avgDays:avg, total, last, nextEst};
+}
+
+function refreshFreqStats(p){
+  const grid = document.getElementById('freqGrid');
+  if(!grid) return;
+  const log = p.log||[];
+  const defs = [
+    {type:'water', icon:'💧', label:'Rega', color:'#6ba3be'},
+    {type:'prune', icon:'✂️', label:'Poda', color:'#8e7b55'},
+    {type:'fert',  icon:'🌱', label:'Adubação', color:'#7a9e3e'},
+  ];
+  grid.innerHTML = defs.map(d=>{
+    const f = calcFreq(log, d.type);
+    let valHtml, subHtml;
+    if(f.total === 0){
+      valHtml = `<div class="freq-val" style="font-size:.9rem;color:#ccc">–</div>`;
+      subHtml = `<div class="freq-sub">Sem registros</div>`;
+    } else if(!f.avgDays){
+      valHtml = `<div class="freq-val">${f.total}</div><div class="freq-unit">registro${f.total!==1?'s':''}</div>`;
+      subHtml = `<div class="freq-sub">Último: ${f.last}</div>`;
+    } else {
+      valHtml = `<div class="freq-val">${f.avgDays}</div><div class="freq-unit">dias entre ${d.label.toLowerCase()}s</div>`;
+      subHtml = `<div class="freq-sub">Total: ${f.total}× · Próx. est.: ${f.nextEst}</div>`;
+    }
+    return `<div class="freq-card">
+      <div class="freq-icon">${d.icon}</div>
+      <div class="freq-label">${d.label}</div>
+      ${valHtml}${subHtml}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// EXPORTAÇÃO EXCEL
+// ══════════════════════════════════════════════
+document.getElementById('btnExportXlsx').addEventListener('click',()=>{
+  try{
+    const wb = XLSX.utils.book_new();
+
+    // ── ABA 1: Espécies e cuidados básicos ──
+    const speciesHeaders = [
+      'Espécie','Categoria','Emoji','Iluminação','Rega','Umidade / Borrifar',
+      'Solo','Adubação','Tolerância à Poda','Dica Principal','Observações detalhadas'
+    ];
+    const speciesRows = Object.values(speciesMap)
+      .sort((a,b)=>a.name.localeCompare(b.name,'pt'))
+      .map(s=>[
+        s.name||'', s.cat||'', s.emoji||'', s.sun||'', s.water||'',
+        s.humidity||'', s.soil||'', s.fert||'', s.prune||'',
+        s.tip||'', s.notes||''
+      ]);
+    const ws1 = XLSX.utils.aoa_to_sheet([speciesHeaders, ...speciesRows]);
+    // column widths
+    ws1['!cols']=[22,14,6,16,16,20,22,26,20,40,60].map(w=>({wch:w}));
+    // freeze header
+    ws1['!freeze']={xSplit:0,ySplit:1};
+    XLSX.utils.book_append_sheet(wb, ws1, '🌿 Espécies');
+
+    // ── ABA 2: Histórico por vaso ──
+    const histHeaders = [
+      'Espécie','Categoria','Vaso','Tipo de Cuidado','Data','Anotação do vaso'
+    ];
+    const histRows = [];
+    Object.values(potsMap)
+      .sort((a,b)=>{
+        const sa=speciesMap[a.speciesId]?.name||'';
+        const sb=speciesMap[b.speciesId]?.name||'';
+        return sa.localeCompare(sb,'pt') || a.potName.localeCompare(b.potName,'pt');
+      })
+      .forEach(p=>{
+        const s=speciesMap[p.speciesId]||{};
+        const logSorted=sortLog(p.log||[]);
+        if(logSorted.length===0){
+          histRows.push([s.name||'?', s.cat||'', p.potName, '(sem registros)', '', p.note||'']);
+        } else {
+          logSorted.forEach((e,i)=>{
+            const tipo = e.type==='water'?'💧 Rega':e.type==='prune'?'✂️ Poda':'🌱 Adubação';
+            histRows.push([
+              s.name||'?', s.cat||'', p.potName, tipo, e.date,
+              i===0 ? (p.note||'') : ''  // anotação só na 1ª linha do vaso
+            ]);
+          });
+        }
+      });
+    const ws2 = XLSX.utils.aoa_to_sheet([histHeaders, ...histRows]);
+    ws2['!cols']=[22,14,16,16,12,40].map(w=>({wch:w}));
+    ws2['!freeze']={xSplit:0,ySplit:1};
+    XLSX.utils.book_append_sheet(wb, ws2, '📋 Histórico de Cuidados');
+
+    // ── ABA 3: Estatísticas por vaso ──
+    const statHeaders = [
+      'Espécie','Vaso',
+      'Total Regas','Média entre Regas (dias)','Última Rega','Próx. Rega Est.',
+      'Total Podas','Média entre Podas (dias)','Última Poda','Próx. Poda Est.',
+      'Total Adubações','Média entre Adubações (dias)','Última Adubação','Próx. Adubação Est.'
+    ];
+    const statRows = Object.values(potsMap)
+      .sort((a,b)=>{
+        const sa=speciesMap[a.speciesId]?.name||'';
+        const sb=speciesMap[b.speciesId]?.name||'';
+        return sa.localeCompare(sb,'pt') || a.potName.localeCompare(b.potName,'pt');
+      })
+      .map(p=>{
+        const s=speciesMap[p.speciesId]||{};
+        const fw=calcFreq(p.log,'water');
+        const fp=calcFreq(p.log,'prune');
+        const ff=calcFreq(p.log,'fert');
+        return [
+          s.name||'?', p.potName,
+          fw.total, fw.avgDays||'–', fw.last||'–', fw.nextEst||'–',
+          fp.total, fp.avgDays||'–', fp.last||'–', fp.nextEst||'–',
+          ff.total, ff.avgDays||'–', ff.last||'–', ff.nextEst||'–',
+        ];
+      });
+    const ws3 = XLSX.utils.aoa_to_sheet([statHeaders, ...statRows]);
+    ws3['!cols']=[22,16,10,22,14,16,10,22,14,16,12,26,16,18].map(w=>({wch:w}));
+    ws3['!freeze']={xSplit:0,ySplit:1};
+    XLSX.utils.book_append_sheet(wb, ws3, '📈 Estatísticas');
+
+    // download
+    const now=new Date();
+    const stamp=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    XLSX.writeFile(wb, `minhas-plantas-${stamp}.xlsx`);
+    toast('📊 Excel exportado!');
+  } catch(err){
+    console.error(err);
+    toast('❌ Erro ao exportar.');
+  }
 });
 
 // Search & filter
