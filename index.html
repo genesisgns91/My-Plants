@@ -33,7 +33,6 @@
   .search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);font-size:1rem;opacity:.4}
   .btn-add{padding:.65rem 1.1rem;border-radius:50px;border:none;background:var(--terra);color:white;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s;flex-shrink:0}
   .btn-add:hover{background:var(--gold)}
-  /* Water All button */
   .action-row{display:flex;gap:.6rem;align-items:center}
   .btn-water-all{padding:.55rem 1rem;border-radius:50px;border:1.5px solid var(--sage);background:white;color:var(--moss);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0;display:flex;align-items:center;gap:.3rem}
   .btn-water-all:hover{background:var(--sage);color:white}
@@ -48,14 +47,12 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
   .species-header{display:flex;align-items:center;gap:.8rem;padding:.75rem 1.2rem .7rem;cursor:pointer;user-select:none;position:relative}
   .species-header:hover{background:rgba(212,224,210,.15)}
-  /* Cover image in header */
   .species-cover-wrap{position:relative;flex-shrink:0;width:52px;height:52px;border-radius:12px;overflow:hidden;background:var(--mist);display:flex;align-items:center;justify-content:center}
   .species-cover-img{width:100%;height:100%;object-fit:cover;display:block}
   .species-cover-emoji{font-size:1.8rem;line-height:1}
   .species-cover-btn{position:absolute;inset:0;background:rgba(0,0,0,.0);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;cursor:pointer;border:none;border-radius:12px}
   .species-cover-wrap:hover .species-cover-btn{opacity:1;background:rgba(0,0,0,.35)}
   .species-cover-btn span{font-size:.9rem;color:white;line-height:1}
-  .species-emoji{font-size:1.8rem;line-height:1}
   .species-meta{flex:1;min-width:0}
   .species-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--ink);line-height:1.2}
   .species-cat{font-size:.68rem;color:var(--sage);text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem}
@@ -64,7 +61,6 @@
   .badge-remind{font-size:.7rem;background:#fff3e0;color:#e65100;padding:.15rem .5rem;border-radius:50px;font-weight:500}
   .pots-row{display:flex;gap:.7rem;padding:.2rem 1rem .9rem;overflow-x:auto;scrollbar-width:none}
   .pots-row::-webkit-scrollbar{display:none}
-  /* Pot card */
   .pot-card{flex-shrink:0;width:130px;background:var(--cream);border-radius:14px;padding:.9rem .8rem;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;border:1.5px solid transparent;position:relative}
   .pot-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(74,103,65,.1);border-color:var(--mist)}
   .pot-card.watered{background:linear-gradient(135deg,#eef7ee 0%,var(--cream) 100%);border-color:#b8d8b8}
@@ -102,7 +98,7 @@
   .info-text{color:#555}
   .section-title{font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.6rem;margin-top:.8rem}
 
-  /* Photo gallery in modal */
+  /* Photo gallery */
   .photo-gallery{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.3rem;margin-bottom:.2rem;scrollbar-width:none}
   .photo-gallery::-webkit-scrollbar{display:none}
   .photo-thumb-wrap{position:relative;flex-shrink:0}
@@ -113,7 +109,7 @@
   .btn-photo-add{flex-shrink:0;width:72px;height:72px;border-radius:10px;border:1.5px dashed var(--mist);background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;cursor:pointer;color:var(--sage);font-size:.6rem;font-family:'DM Sans',sans-serif;transition:all .2s}
   .btn-photo-add:hover{border-color:var(--sage);background:rgba(212,224,210,.15)}
   .btn-photo-add span{font-size:1.2rem}
-  #photoInput{display:none}
+  #photoInput,#coverInput{display:none}
 
   /* Lightbox */
   .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:800;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -122,7 +118,7 @@
   .lightbox-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.15);border:none;color:white;font-size:1.4rem;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
   .lightbox-date{position:absolute;bottom:1.5rem;color:rgba(255,255,255,.6);font-size:.8rem;font-family:'DM Sans',sans-serif}
 
-  /* Care buttons */
+  /* Care */
   .care-row{display:flex;gap:.5rem;margin-bottom:.5rem}
   .care-btn{display:flex;align-items:center;gap:.35rem;padding:.5rem .6rem;border-radius:10px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;cursor:pointer;transition:all .2s;color:var(--ink);flex:1;justify-content:center}
   .care-btn.water-c:hover,.care-btn.water-c.active{background:#e8f4f8;border-color:#6ba3be}
@@ -184,8 +180,9 @@
   .add-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--moss);margin-bottom:1.2rem}
   .form-group{margin-bottom:.85rem}
   .form-group label{display:block;font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.3rem}
-  .form-group input,.form-group select{width:100%;padding:.65rem .9rem;border:1.5px solid var(--mist);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--ink);background:white;outline:none}
-  .form-group input:focus,.form-group select:focus{border-color:var(--sage)}
+  .form-group input,.form-group select,.form-group textarea{width:100%;padding:.65rem .9rem;border:1.5px solid var(--mist);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--ink);background:white;outline:none}
+  .form-group textarea{resize:vertical;min-height:70px}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--sage)}
   .form-row{display:flex;gap:.6rem}
   .form-row .form-group{flex:1}
   .emoji-picker{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.4rem}
@@ -196,6 +193,58 @@
   /* Toast */
   #toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:white;padding:.55rem 1.2rem;border-radius:50px;font-size:.8rem;font-family:'DM Sans',sans-serif;z-index:900;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ═══ SPECIES INFO MODAL ═══ */
+  .sinfo-modal{background:var(--cream);border-radius:24px 24px 18px 18px;padding:0;width:100%;max-width:460px;transform:translateY(30px);transition:transform .28s cubic-bezier(.34,1.56,.64,1);max-height:94vh;overflow-y:auto;overflow-x:hidden}
+  .modal-overlay.open .sinfo-modal{transform:translateY(0)}
+
+  /* Hero banner at top of species info */
+  .sinfo-hero{position:relative;height:140px;background:linear-gradient(135deg,var(--moss) 0%,var(--sage) 100%);display:flex;align-items:flex-end;padding:1.2rem 1.4rem .9rem;flex-shrink:0;overflow:hidden}
+  .sinfo-hero::before{content:'';position:absolute;inset:0;opacity:.08;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+  .sinfo-hero-cover{position:absolute;inset:0;object-fit:cover;width:100%;height:100%;opacity:.35}
+  .sinfo-hero-emoji{font-size:3.2rem;line-height:1;position:relative;z-index:1;margin-right:.8rem;filter:drop-shadow(0 2px 8px rgba(0,0,0,.2))}
+  .sinfo-hero-text{position:relative;z-index:1;flex:1}
+  .sinfo-hero-name{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:700;color:white;line-height:1.15;text-shadow:0 1px 6px rgba(0,0,0,.3)}
+  .sinfo-hero-cat{font-size:.68rem;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.1em;margin-top:.25rem}
+  .sinfo-close-btn{position:absolute;top:.9rem;right:.9rem;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:white;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s}
+  .sinfo-close-btn:hover{background:rgba(255,255,255,.35)}
+
+  /* Body of species info modal */
+  .sinfo-body{padding:1.2rem 1.4rem 1.4rem}
+
+  /* Info cards grid */
+  .sinfo-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.1rem}
+  .sinfo-card{background:white;border-radius:14px;padding:.85rem .9rem;border:1.5px solid var(--mist);display:flex;flex-direction:column;gap:.25rem}
+  .sinfo-card.full{grid-column:1/-1}
+  .sinfo-card-icon{font-size:1.4rem;line-height:1;margin-bottom:.1rem}
+  .sinfo-card-label{font-size:.62rem;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--gold)}
+  .sinfo-card-value{font-size:.82rem;font-weight:500;color:var(--ink);line-height:1.4}
+  .sinfo-card-sub{font-size:.72rem;color:#777;line-height:1.4;margin-top:.1rem}
+
+  /* Quick tags */
+  .sinfo-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+  .sinfo-tag{font-size:.7rem;padding:.2rem .65rem;border-radius:50px;font-weight:500}
+  .sinfo-tag.green{background:#e8f5e9;color:#2e7d32}
+  .sinfo-tag.blue{background:#e3f2fd;color:#1565c0}
+  .sinfo-tag.orange{background:#fff3e0;color:#e65100}
+  .sinfo-tag.brown{background:#efebe9;color:#4e342e}
+  .sinfo-tag.purple{background:#f3e5f5;color:#6a1b9a}
+
+  /* Section heading inside sinfo */
+  .sinfo-section{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin:1rem 0 .5rem;display:flex;align-items:center;gap:.4rem}
+  .sinfo-section::after{content:'';flex:1;height:1px;background:var(--mist)}
+
+  /* Notes textarea inside sinfo */
+  .sinfo-notes-area{width:100%;padding:.8rem 1rem;border:1.5px solid var(--mist);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.83rem;resize:vertical;min-height:80px;color:var(--ink);background:white;outline:none;line-height:1.55}
+  .sinfo-notes-area:focus{border-color:var(--sage)}
+  .sinfo-notes-hint{font-size:.68rem;color:#aaa;margin-top:.3rem;margin-bottom:.8rem}
+
+  /* Action row inside sinfo */
+  .sinfo-actions{display:flex;gap:.5rem;margin-top:.8rem}
+  .sinfo-btn-edit{flex:1;padding:.65rem;border-radius:10px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;color:var(--moss);transition:all .2s}
+  .sinfo-btn-edit:hover{background:var(--mist)}
+  .sinfo-btn-save{flex:2;padding:.65rem;border-radius:10px;border:none;background:var(--moss);color:white;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:background .2s}
+  .sinfo-btn-save:hover{background:var(--sage)}
 </style>
 </head>
 <body>
@@ -248,6 +297,45 @@
   <div class="lightbox-date" id="lbDate"></div>
 </div>
 
+<!-- ═══ SPECIES INFO MODAL ═══ -->
+<div class="modal-overlay" id="sinfoModal">
+  <div class="sinfo-modal">
+    <!-- Hero -->
+    <div class="sinfo-hero" id="sinfoHero">
+      <img class="sinfo-hero-cover" id="sinfoHeroCover" src="" alt="" style="display:none">
+      <span class="sinfo-hero-emoji" id="sinfoEmoji">🌱</span>
+      <div class="sinfo-hero-text">
+        <div class="sinfo-hero-name" id="sinfoName"></div>
+        <div class="sinfo-hero-cat" id="sinfoCat"></div>
+      </div>
+      <button class="sinfo-close-btn" id="sinfoClose">✕</button>
+    </div>
+
+    <!-- Body -->
+    <div class="sinfo-body">
+      <!-- Tags -->
+      <div class="sinfo-tags" id="sinfoTags"></div>
+
+      <!-- Cards grid -->
+      <div class="sinfo-grid" id="sinfoGrid"></div>
+
+      <!-- Dicas gerais -->
+      <div class="sinfo-section">💡 Dicas gerais</div>
+      <div id="sinfoTipText" style="font-size:.84rem;color:#444;line-height:1.65;background:white;border-radius:12px;padding:.85rem 1rem;border:1.5px solid var(--mist);margin-bottom:.3rem"></div>
+
+      <!-- Anotações da espécie (editável) -->
+      <div class="sinfo-section" style="margin-top:1.1rem">📝 Minhas anotações sobre esta espécie</div>
+      <textarea class="sinfo-notes-area" id="sinfoNotes" placeholder="Adicione suas observações, experiências, locais de compra, variedades que tem, curiosidades…"></textarea>
+      <div class="sinfo-notes-hint">💾 Salvo automaticamente por espécie</div>
+
+      <div class="sinfo-actions">
+        <button class="sinfo-btn-edit" id="sinfoEditBtn">✏️ Editar espécie</button>
+        <button class="sinfo-btn-save" id="sinfoSaveBtn">Salvar anotações</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- POT DETAIL MODAL -->
 <div class="modal-overlay" id="detailModal">
   <div class="modal">
@@ -260,7 +348,7 @@
     <div class="section-title">📸 Fotos do vaso</div>
     <div class="photo-gallery" id="photoGallery"></div>
     <input type="file" id="photoInput" accept="image/*" capture="environment">
-<input type="file" id="coverInput" accept="image/*" capture="environment">
+    <input type="file" id="coverInput" accept="image/*" capture="environment">
 
     <!-- Care -->
     <div class="section-title">Registrar cuidado</div>
@@ -286,7 +374,7 @@
     </div>
     <button class="btn-secondary" id="btnToggleBackdate">📅 Registrar data passada</button>
 
-    <!-- History (chronological) -->
+    <!-- History -->
     <div class="section-title" style="margin-top:.8rem">Histórico de cuidados</div>
     <div class="history-box" id="historyBox"></div>
 
@@ -306,8 +394,8 @@
     </div>
 
     <!-- Note -->
-    <div class="section-title">Anotações</div>
-    <textarea class="note-area" id="noteArea" rows="2" placeholder="Observações pessoais…"></textarea>
+    <div class="section-title">Anotações do vaso</div>
+    <textarea class="note-area" id="noteArea" rows="2" placeholder="Observações pessoais sobre este vaso…"></textarea>
 
     <div class="modal-btns">
       <button class="btn-close" id="btnClose">Fechar</button>
@@ -349,16 +437,60 @@
         </select>
       </div>
     </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Necessidade de rega</label>
+        <select id="newWater">
+          <option>Muito baixa</option><option>Pouca</option><option>Baixa</option>
+          <option selected>Moderada</option><option>Alta</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tolerância à poda</label>
+        <select id="newPrune">
+          <option>Alta</option><option>Moderada</option><option>Baixa</option><option>Não podar</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Umidade / borrifar</label>
+        <select id="newHumidity">
+          <option>Ama umidade</option>
+          <option>Borrifar folhas</option>
+          <option selected>Moderada</option>
+          <option>Prefere seca</option>
+          <option>Não borrifar</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Solo</label>
+        <select id="newSoil">
+          <option>Drenado e arenoso</option>
+          <option selected>Leve e rico</option>
+          <option>Orgânico e úmido</option>
+          <option>Universal</option>
+          <option>Específico p/ suculenta</option>
+        </select>
+      </div>
+    </div>
     <div class="form-group">
-      <label>Necessidade de rega</label>
-      <select id="newWater">
-        <option>Muito baixa</option><option>Pouca</option><option>Baixa</option>
-        <option selected>Moderada</option><option>Alta</option>
+      <label>Adubação</label>
+      <select id="newFert">
+        <option>Não necessita</option>
+        <option>Raramente (1×/ano)</option>
+        <option selected>Mensal na primavera/verão</option>
+        <option>Quinzenal na primavera/verão</option>
+        <option>Frequente (toda rega)</option>
       </select>
     </div>
     <div class="form-group">
-      <label>Dica de cuidado (opcional)</label>
+      <label>Dica de cuidado principal</label>
       <input type="text" id="newTip" placeholder="Ex: Podar após floração">
+    </div>
+    <div class="form-group">
+      <label>Observações detalhadas (opcional)</label>
+      <textarea id="newNotes" placeholder="Informações extras, curiosidades, experiências…" rows="3"></textarea>
     </div>
     <div class="form-group">
       <label>Emoji</label>
@@ -409,10 +541,6 @@ const fb = initializeApp({
 });
 const db = getFirestore(fb);
 
-// Two collections: "species" and "pots"
-// species: { id, name, cat, emoji, sun, water, tip }
-// pots: { id, speciesId, potName, note, log[], photos[], reminders[], watered, wateredDate }
-
 const speciesCol = collection(db,"species");
 const potsCol    = collection(db,"pots");
 
@@ -433,7 +561,6 @@ let activeCoverSpeciesId=null;
 const today = () => new Date().toLocaleDateString('pt-BR');
 const todayISO = () => new Date().toISOString().split('T')[0];
 
-// Helpers
 function parseDate(str){
   if(!str)return null;
   if(str.includes('/')){const[d,m,y]=str.split('/');return new Date(y,m-1,d);}
@@ -461,46 +588,67 @@ function toast(msg){
   setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-// SEED
+// ══════════════════════════════════════════════
+// SEED — dados detalhados de cada espécie
+// ══════════════════════════════════════════════
 const BASE_SPECIES=[
-  {id:"agave-dragao",name:"Agave Dragão",cat:"suculentas",emoji:"🌵",sun:"Sol pleno",water:"Pouca",tip:"Resistente à seca. Não encharcar."},
-  {id:"agave-palito",name:"Agave Palito",cat:"suculentas",emoji:"🪴",sun:"Sol pleno",water:"Pouca",tip:"Folhas rígidas e afiadas. Drene bem."},
-  {id:"alecrim",name:"Alecrim",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",tip:"Ama sol. Ótimo para cozinha."},
-  {id:"alface-crespa",name:"Alface Crespa",cat:"comestíveis",emoji:"🥬",sun:"Meia sombra",water:"Alta",tip:"Colher folhas externas. Regar sempre."},
-  {id:"avenca",name:"Avenca",cat:"sombra",emoji:"🍃",sun:"Sombra",water:"Alta",tip:"Ama umidade. Proteger do vento."},
-  {id:"bougainvillea",name:"Bougainvillea",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Baixa",tip:"Floresce mais quando estressada."},
-  {id:"brinco-princesa",name:"Brinco de Princesa",cat:"ornamentais",emoji:"💜",sun:"Meia sombra",water:"Moderada",tip:"Floresce em ambientes frescos."},
-  {id:"bromelia",name:"Bromélia",cat:"tropicais",emoji:"🌺",sun:"Meia sombra",water:"Calice",tip:"Manter água no cálice central."},
-  {id:"cebolinha",name:"Cebolinha",cat:"comestíveis",emoji:"🧅",sun:"Sol pleno",water:"Moderada",tip:"Colher antes de florescer."},
-  {id:"clorofito",name:"Clorofito",cat:"sombra",emoji:"🌿",sun:"Meia sombra",water:"Moderada",tip:"Filtra o ar. Fácil de se multiplicar."},
-  {id:"coleus",name:"Coleus",cat:"ornamentais",emoji:"🍂",sun:"Meia sombra",water:"Moderada",tip:"Folhagem colorida. Retirar flores para durar mais."},
-  {id:"confete",name:"Confete",cat:"ornamentais",emoji:"🌼",sun:"Sol/Meia",water:"Baixa",tip:"Muito resistente. Poucas exigências."},
-  {id:"cravo",name:"Cravo",cat:"ornamentais",emoji:"🌷",sun:"Sol pleno",water:"Moderada",tip:"Não deixar empapar. Fragância intensa."},
-  {id:"espada-sao-jorge",name:"Espada de São Jorge",cat:"sombra",emoji:"🌿",sun:"Sombra/Meia",water:"Muito baixa",tip:"Praticamente infalível. Pouca água."},
-  {id:"falsa-erika",name:"Falsa Érika",cat:"ornamentais",emoji:"💐",sun:"Sol pleno",water:"Moderada",tip:"Boa poda mantém a forma arbustiva."},
-  {id:"geranio-pendente",name:"Gerânio Pendente",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Moderada",tip:"Ideal para vasos pendentes."},
-  {id:"gola-palhaco",name:"Gola de Palhaço",cat:"ornamentais",emoji:"🌿",sun:"Meia sombra",water:"Moderada",tip:"Folhagem variegada. Evitar sol direto forte."},
-  {id:"guine",name:"Guiné",cat:"aromáticas",emoji:"🌿",sun:"Sol/Meia",water:"Moderada",tip:"Repelente natural de insetos."},
-  {id:"hibisco",name:"Hibisco",cat:"ornamentais",emoji:"🌺",sun:"Sol pleno",water:"Alta",tip:"Flores grandes e efêmeras. Adora calor."},
-  {id:"hortela",name:"Hortelã",cat:"aromáticas",emoji:"🌿",sun:"Meia sombra",water:"Alta",tip:"Invasiva em canteiros. Melhor em vaso isolado."},
-  {id:"jiboia-pendente",name:"Jiboia Pendente",cat:"sombra",emoji:"🍃",sun:"Sombra/Meia",water:"Moderada",tip:"Enraíza fácil. Muito adaptável."},
-  {id:"ligustro-bonsai",name:"Ligustro Bonsai",cat:"ornamentais",emoji:"🌳",sun:"Sol pleno",water:"Moderada",tip:"Poda frequente para manter forma. Paciência."},
-  {id:"manjericao",name:"Manjericão",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",tip:"Retirar flores para prolongar colheita."},
-  {id:"mosquitinho",name:"Mosquitinho",cat:"ornamentais",emoji:"🌼",sun:"Sol pleno",water:"Baixa",tip:"Florezinhas delicadas. Não encharcar."},
-  {id:"onze-horas",name:"Onze Horas",cat:"suculentas",emoji:"🌼",sun:"Sol pleno",water:"Baixa",tip:"Abre só com sol. Muito resistente ao calor."},
-  {id:"palmeira-raphis",name:"Palmeira Raphis",cat:"tropicais",emoji:"🌴",sun:"Meia sombra",water:"Moderada",tip:"(Ravi) Elegante. Cresce lentamente."},
-  {id:"pata-elefante",name:"Pata de Elefante",cat:"suculentas",emoji:"🐘",sun:"Sol pleno",water:"Muito baixa",tip:"Armazena água no tronco. Muito resistente."},
-  {id:"rosa-deserto",name:"Rosa do Deserto",cat:"suculentas",emoji:"🌸",sun:"Sol pleno",water:"Pouca",tip:"Não molhar folhas. Tronco é reservatório."},
-  {id:"samambaia",name:"Samambaia",cat:"sombra",emoji:"🌿",sun:"Sombra",water:"Alta",tip:"Borrifar folhas. Ama umidade constante."},
-  {id:"zamioculca",name:"Zamioculca",cat:"sombra",emoji:"🌿",sun:"Sombra/Meia",water:"Muito baixa",tip:"Quase indestrutível. Tolera negligência."},
+  {id:"agave-dragao",name:"Agave Dragão",cat:"suculentas",emoji:"🌵",sun:"Sol pleno",water:"Pouca",humidity:"Não borrifar",soil:"Drenado e arenoso",fert:"Raramente (1×/ano)",prune:"Não podar",tip:"Resistente à seca. Nunca encharcar.",notes:"Originária do México. Cresce lentamente e pode levar décadas para florescer. Quando floresce, a planta mãe morre mas deixa mudas (filhotes) ao redor. Excelente para jardins com pouca manutenção. Raízes profundas — prefere vasos altos e estreitos."},
+  {id:"agave-palito",name:"Agave Palito",cat:"suculentas",emoji:"🪴",sun:"Sol pleno",water:"Pouca",humidity:"Não borrifar",soil:"Drenado e arenoso",fert:"Raramente (1×/ano)",prune:"Não podar",tip:"Folhas rígidas e afiadas. Drene muito bem.",notes:"Variedade compacta de agave. Ideal para vasos menores. Atenção: pontas das folhas são muito afiadas — cuidado ao manusear. Suporta calor intenso e longos períodos sem chuva. Não tolera raízes encharcadas."},
+  {id:"alecrim",name:"Alecrim",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",humidity:"Prefere seca",soil:"Drenado e arenoso",fert:"Raramente (1×/ano)",prune:"Alta",tip:"Ama sol. Ótimo para cozinha e repelente.",notes:"Erva mediterrânea muito rústica. Prefere solo bem drenado — o excesso de água é o maior inimigo. Podar levemente após a floração para manter forma compacta. Aroma intenso afasta mosquitos. Colher os brotos novos para estimular ramificação. Floresce com flores lilases na primavera."},
+  {id:"alface-crespa",name:"Alface Crespa",cat:"comestíveis",emoji:"🥬",sun:"Meia sombra",water:"Alta",humidity:"Ama umidade",soil:"Orgânico e úmido",fert:"Quinzenal na primavera/verão",prune:"Alta",tip:"Colher folhas externas. Regar diariamente.",notes:"Prefere temperaturas amenas — em dias quentes pode 'boltar' (subir flor) e amargar. Regar de manhã, evitando encharcar o centro da planta. Colher sempre as folhas de fora para dentro, deixando o miolo crescer. Substituir a cada 2–3 meses."},
+  {id:"avenca",name:"Avenca",cat:"sombra",emoji:"🍃",sun:"Sombra",water:"Alta",humidity:"Ama umidade",soil:"Orgânico e úmido",fert:"Mensal na primavera/verão",prune:"Baixa",tip:"Ama umidade. Borrifar folhas diariamente.",notes:"Uma das plantas mais exigentes em umidade. Nunca deixar o solo secar completamente. Borrifar as folhas todos os dias é fundamental. Evitar correntes de ar e ar condicionado direto. Se as folhinhas caírem, é sinal de seca ou vento. Pode ser recuperada cortando todos os talos na base e regando abundantemente."},
+  {id:"bougainvillea",name:"Bougainvillea",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Baixa",humidity:"Prefere seca",soil:"Drenado e arenoso",fert:"Mensal na primavera/verão",prune:"Alta",tip:"Floresce mais quando estressada pela seca.",notes:"Paradoxalmente, regar menos favorece a floração — o estresse hídrico estimula brácteas coloridas. Poda intensa após cada ciclo de floração renova a planta. Suporta geadas leves. Os espinhos são grandes — usar luvas ao podar. As cores 'vistosas' são brácteas (folhas modificadas), não pétalas."},
+  {id:"brinco-princesa",name:"Brinco de Princesa",cat:"ornamentais",emoji:"💜",sun:"Meia sombra",water:"Moderada",humidity:"Moderada",soil:"Leve e rico",fert:"Mensal na primavera/verão",prune:"Moderada",tip:"Floresce melhor em ambientes frescos e úmidos.",notes:"Fúcsia (Fuchsia). Prefere temperaturas entre 15–21°C — sofre muito com calor intenso. Regar quando o solo estiver levemente seco na superfície. As flores pendentes são muito delicadas. Podar levemente para estimular ramificação. Ideal para varandas sombreadas no verão."},
+  {id:"bromelia",name:"Bromélia",cat:"tropicais",emoji:"🌺",sun:"Meia sombra",water:"Calice",humidity:"Ama umidade",soil:"Leve e rico",fert:"Mensal na primavera/verão",prune:"Não podar",tip:"Manter água limpa no cálice central. Trocar semanalmente.",notes:"A rega é feita no cálice (roseta central), não no solo. Trocar a água do cálice semanalmente para evitar mosquitos e apodrecimento. Após florescer, a planta mãe morre lentamente — os filhotes (perfilhos) na base são a próxima geração. Separá-los quando tiverem 1/3 do tamanho da mãe."},
+  {id:"cebolinha",name:"Cebolinha",cat:"comestíveis",emoji:"🧅",sun:"Sol pleno",water:"Moderada",humidity:"Moderada",soil:"Leve e rico",fert:"Mensal na primavera/verão",prune:"Alta",tip:"Colher antes de florescer. Estimula brotação.",notes:"Colher sempre cortando a 2–3 cm do solo para estimular novos brotos. Quando aparecer flores (pompons roxos), colher imediatamente pois após a floração as folhas ficam mais fibrosas e menos saborosas. Replante dividindo as touceiras a cada 1–2 anos. Ideal em vasos na janela da cozinha."},
+  {id:"clorofito",name:"Clorofito",cat:"sombra",emoji:"🌿",sun:"Meia sombra",water:"Moderada",humidity:"Moderada",soil:"Universal",fert:"Mensal na primavera/verão",prune:"Baixa",tip:"Filtra o ar. Mudas nos arames — plantar em água.",notes:"Planta aranha (Chlorophytum comosum). Uma das melhores plantas filtrantes de ar. Os 'arames' com plantinhas nas pontas podem ser enraizados em água. Muito adaptável e resistente à negligência. Pontas das folhas ficam marrons com água fluoretada — usar água filtrada."},
+  {id:"coleus",name:"Coleus",cat:"ornamentais",emoji:"🍂",sun:"Meia sombra",water:"Moderada",humidity:"Ama umidade",soil:"Leve e rico",fert:"Mensal na primavera/verão",prune:"Alta",tip:"Retirar flores para manter folhagem vibrante mais tempo.",notes:"Cultivado pela folhagem colorida (roxo, verde, vermelho, amarelo). Quando floresce, a energia vai para a semente e as folhas perdem cor — remover flores assim que aparecerem. Propaga facilmente por estacas em água. Sensível ao frio abaixo de 10°C."},
+  {id:"confete",name:"Confete",cat:"ornamentais",emoji:"🌼",sun:"Sol/Meia",water:"Baixa",humidity:"Moderada",soil:"Universal",fert:"Raramente (1×/ano)",prune:"Moderada",tip:"Muito resistente. Poucas exigências. Ótima para iniciantes.",notes:"Cuphea ou similar. Floração contínua e abundante com mínima manutenção. Poda leve após floração renova a planta. Suporta bem a seca ocasional. Atrai beija-flores e borboletas. Ideal para quem está começando no jardinagem."},
+  {id:"cravo",name:"Cravo",cat:"ornamentais",emoji:"🌷",sun:"Sol pleno",water:"Moderada",humidity:"Prefere seca",soil:"Drenado e arenoso",fert:"Mensal na primavera/verão",prune:"Moderada",tip:"Solo bem drenado. Fragância intensa. Não encharcar.",notes:"Dianthus. Prefere dias quentes e noites frescas. Remover flores murchas (deadheading) estimula nova floração. Não tolera solo encharcado — raízes apodrecem rapidamente. A fragrância é mais intensa ao entardecer. Boa ventilação previne doenças fúngicas."},
+  {id:"espada-sao-jorge",name:"Espada de São Jorge",cat:"sombra",emoji:"🌿",sun:"Sombra/Meia",water:"Muito baixa",humidity:"Prefere seca",soil:"Drenado e arenoso",fert:"Raramente (1×/ano)",prune:"Não podar",tip:"Praticamente infalível. Regar 1× a cada 3–4 semanas.",notes:"Sansevieria / Dracaena trifasciata. Uma das plantas mais resistentes do mundo. Tolera esquecimento total — sobrevive meses sem água. Purifica o ar removendo toxinas. Raízes apodrecem facilmente com excesso de água. Propaga por divisão de touceira ou por folha cortada enterrada."},
+  {id:"falsa-erika",name:"Falsa Érika",cat:"ornamentais",emoji:"💐",sun:"Sol pleno",water:"Moderada",humidity:"Moderada",soil:"Leve e rico",fert:"Mensal na primavera/verão",prune:"Alta",tip:"Poda constante mantém forma arbustiva e floração.",notes:"Cuphea hyssopifolia. Floração quase contínua em climas quentes. A poda frequente não prejudica — ao contrário, estimula mais botões florais. Pode ser moldada como mini-sebe ou topiaria. Propaga facilmente por estacas."},
+  {id:"geranio-pendente",name:"Gerânio Pendente",cat:"ornamentais",emoji:"🌸",sun:"Sol pleno",water:"Moderada",humidity:"Prefere seca",soil:"Leve e rico",fert:"Quinzenal na primavera/verão",prune:"Alta",tip:"Ideal para cestas suspensas. Remover flores murchas.",notes:"Pelargonium peltatum. Os caules longos e pendentes são perfeitos para vasos suspensos e jardineiras. Floração abundante em vermelhos, rosas e brancos. Regar quando o solo estiver seco a 2cm de profundidade. Remover flores murchas regularmente. Sensível a geadas."},
+  {id:"gola-palhaco",name:"Gola de Palhaço",cat:"ornamentais",emoji:"🌿",sun:"Meia sombra",water:"Moderada",humidity:"Ama umidade",soil:"Leve e rico",fert:"Mensal na primavera/verão",prune:"Baixa",tip:"Folhagem variegada. Proteger do sol forte direto.",notes:"Hypoestes phyllostachya ou similar. As manchas coloridas nas folhas são o grande atrativo. Sol forte direto pode desbotar as cores. Mantém melhor coloração em luz indireta brilhante. Propaga facilmente por estacas. Pinçar as pontas estimula ramificação mais densa."},
+  {id:"guine",name:"Guiné",cat:"aromáticas",emoji:"🌿",sun:"Sol/Meia",water:"Moderada",humidity:"Moderada",soil:"Universal",fert:"Raramente (1×/ano)",prune:"Alta",tip:"Repelente natural de insetos. Plante próximo à porta.",notes:"Petiveria alliacea. Odor forte e penetrante afasta mosquitos, pernilongos e outros insetos. Muito rústica e de crescimento rápido. Raízes profundas — difícil de remover quando bem estabelecida. Folhas secas dentro de casa também funcionam como repelente."},
+  {id:"hibisco",name:"Hibisco",cat:"ornamentais",emoji:"🌺",sun:"Sol pleno",water:"Alta",humidity:"Ama umidade",soil:"Leve e rico",fert:"Quinzenal na primavera/verão",prune:"Alta",tip:"Flores duram 1 dia. Regar abundantemente no verão.",notes:"Hibiscus rosa-sinensis. Cada flor dura apenas um dia, mas a floração é contínua. Adubação com fósforo estimula mais flores. Poda intensa no inverno rejuvenesce a planta. As flores são comestíveis e usadas para chá. Sensível a temperaturas abaixo de 10°C. Pulgões se instalam nos brotos novos — lavar com jato d'água."},
+  {id:"hortela",name:"Hortelã",cat:"aromáticas",emoji:"🌿",sun:"Meia sombra",water:"Alta",humidity:"Ama umidade",soil:"Orgânico e úmido",fert:"Mensal na primavera/verão",prune:"Alta",tip:"Invasiva. Manter em vaso isolado. Colher regularmente.",notes:"Mentha. Extremamente invasiva em canteiros — raízes se espalham rapidamente. Em vaso, pode crescer muito e precisar de replante anual. Colher as pontas regularmente estimula ramificação e evita floração precoce. Muitas variedades: hortelã-pimenta, spearmint, hortelã-da-folha-miúda. Propaga facilmente por estacas em água."},
+  {id:"jiboia-pendente",name:"Jiboia Pendente",cat:"sombra",emoji:"🍃",sun:"Sombra/Meia",water:"Moderada",humidity:"Moderada",soil:"Leve e rico",fert:"Mensal na primavera/verão",prune:"Moderada",tip:"Muito adaptável. Ramos longos podem ser guiados ou pendurar.",notes:"Epipremnum aureum (pothos). Uma das plantas de interior mais fáceis. Tolera baixa luminosidade, esquecimento e variações de temperatura. Propaga facilmente: cortar um pedaço com 2 nós e colocar em água. Folhas variegadas perdem o padrão em ambientes muito escuros. Tóxica para pets se ingerida."},
+  {id:"ligustro-bonsai",name:"Ligustro Bonsai",cat:"ornamentais",emoji:"🌳",sun:"Sol pleno",water:"Moderada",humidity:"Moderada",soil:"Específico p/ suculenta",fert:"Mensal na primavera/verão",prune:"Alta",tip:"Poda frequente para modelar. Exige paciência e dedicação.",notes:"Ligustrum sinense como bonsai. Requer rega regular — nunca deixar secar completamente. Poda de manutenção constante para manter a forma. Repotagem a cada 2 anos com substituição parcial do substrato. Ligar ao ar livre sempre que possível. Proteger de geadas fortes. A jornada do bonsai é longa — cada ano a planta fica mais bela."},
+  {id:"manjericao",name:"Manjericão",cat:"aromáticas",emoji:"🌿",sun:"Sol pleno",water:"Moderada",humidity:"Moderada",soil:"Leve e rico",fert:"Quinzenal na primavera/verão",prune:"Alta",tip:"Pinçar flores prolonga colheita. Colher pela manhã.",notes:"Ocimum basilicum. Regar na base, nunca molhar as folhas (favorece doenças fúngicas). Colher sempre os brotos das pontas, nunca folhas de dentro. Quando aparecerem flores, pinçar imediatamente para prolongar a vida da planta. Temperatura mínima: 10°C. Variedades: manjericão-genovês, roxo, tailandês, limão."},
+  {id:"mosquitinho",name:"Mosquitinho",cat:"ornamentais",emoji:"🌼",sun:"Sol pleno",water:"Baixa",humidity:"Prefere seca",soil:"Drenado e arenoso",fert:"Raramente (1×/ano)",prune:"Moderada",tip:"Florezinhas delicadas. Solo bem drenado. Não encharcar.",notes:"Gypsophila ou similar. Floração em nuvem de flores minúsculas brancas ou rosadas. Muito usado em arranjos. Solo alcalino favorece o desenvolvimento. Regar com moderação — raízes apodrecem facilmente. Cortar após floração estimula nova brotação."},
+  {id:"onze-horas",name:"Onze Horas",cat:"suculentas",emoji:"🌼",sun:"Sol pleno",water:"Baixa",humidity:"Prefere seca",soil:"Drenado e arenoso",fert:"Raramente (1×/ano)",prune:"Baixa",tip:"Abre só com sol pleno. Altamente resistente ao calor.",notes:"Portulaca grandiflora. Fecha as flores à noite e em dias nublados — abre apenas com sol forte. Extremamente resistente ao calor e seca. Auto-semeia: deixar algumas flores murchas para que as sementes caiam e germinem naturalmente. Cores vibrantes em vermelho, amarelo, laranja, rosa e branco."},
+  {id:"palmeira-raphis",name:"Palmeira Raphis",cat:"tropicais",emoji:"🌴",sun:"Meia sombra",water:"Moderada",humidity:"Ama umidade",soil:"Leve e rico",fert:"Mensal na primavera/verão",prune:"Baixa",tip:"Elegante. Crescimento lento. Borrifar folhas regularmente.",notes:"Rhapis excelsa. Uma das palmeiras mais elegantes para interior. Tolera sombra melhor que a maioria das palmeiras. Crescimento muito lento — um exemplar adulto pode ter décadas. Pontas das folhas ficam marrons com água fluoretada ou ar seco — aparar com tesoura e aumentar umidade. (Ravi) Belo espécime!"},
+  {id:"pata-elefante",name:"Pata de Elefante",cat:"suculentas",emoji:"🐘",sun:"Sol pleno",water:"Muito baixa",humidity:"Prefere seca",soil:"Drenado e arenoso",fert:"Raramente (1×/ano)",prune:"Não podar",tip:"Tronco armazena água. Muito resistente. Regar 1×/mês.",notes:"Beaucarnea recurvata. O tronco bulboso na base armazena água por longos períodos. Originária do México. Pode viver décadas — exemplares centenários existem no México. Folhas em cascata dão aspecto elegante. Nunca deixar em solo encharcado. Excelente para quem viaja ou esquece de regar."},
+  {id:"rosa-deserto",name:"Rosa do Deserto",cat:"suculentas",emoji:"🌸",sun:"Sol pleno",water:"Pouca",humidity:"Não borrifar",soil:"Drenado e arenoso",fert:"Mensal na primavera/verão",prune:"Baixa",tip:"Não molhar folhas nem tronco. Tronco é reservatório.",notes:"Adenium obesum. O tronco (caudex) inchado armazena água e nutrientes. Flores espetaculares em rosa, vermelho e branco. Regar apenas quando o solo estiver completamente seco. Nunca molhar o tronco ou folhas — apodrecem facilmente. Dormência parcial no inverno — reduzir rega drasticamente. Todas as partes são tóxicas."},
+  {id:"samambaia",name:"Samambaia",cat:"sombra",emoji:"🌿",sun:"Sombra",water:"Alta",humidity:"Borrifar folhas",soil:"Orgânico e úmido",fert:"Mensal na primavera/verão",prune:"Moderada",tip:"Borrifar folhas diariamente. Ama umidade constante.",notes:"Nephrolepis exaltata ou similar. Extremamente sensível à falta de umidade. Borrifar as folhas uma ou duas vezes ao dia no verão é essencial. Nunca expor ao sol direto ou correntes de ar. Se as folhas ficarem amarelas e caírem: sinal de seca. Cortar frondes (folhas) secas na base. Ótima para banheiros com boa iluminação indireta."},
+  {id:"zamioculca",name:"Zamioculca",cat:"sombra",emoji:"🌿",sun:"Sombra/Meia",water:"Muito baixa",humidity:"Prefere seca",soil:"Drenado e arenoso",fert:"Raramente (1×/ano)",prune:"Não podar",tip:"Quase indestrutível. Regar 1× a cada 3 semanas.",notes:"Zamioculcas zamiifolia. Originária da África Oriental. Os rizomas armazenam água e nutrientes — tolera negligência extrema. Cresce em quase qualquer condição de luz. Folhas amarelas = excesso de água (causa mais comum de morte). Propaga por divisão do rizoma ou por folha enterrada (processo lento). Leve toxicidade — lavar mãos após manusear."},
 ];
 
 async function seed(){
-  const [sSnap, pSnap] = await Promise.all([getDocs(speciesCol), getDocs(potsCol)]);
-  if(!sSnap.empty) return; // already seeded
+  const sSnap = await getDocs(speciesCol);
+  if(!sSnap.empty){
+    // Migration: add new fields to existing species if missing
+    for(const d of sSnap.docs){
+      const data=d.data();
+      const base=BASE_SPECIES.find(b=>b.id===d.id);
+      if(base){
+        const updates={};
+        if(!data.humidity) updates.humidity=base.humidity;
+        if(!data.soil) updates.soil=base.soil;
+        if(!data.fert) updates.fert=base.fert;
+        if(!data.prune) updates.prune=base.prune;
+        if(!data.notes) updates.notes=base.notes;
+        if(Object.keys(updates).length) await updateDoc(doc(db,"species",d.id),updates);
+      }
+    }
+    return;
+  }
   for(const s of BASE_SPECIES){
-    await setDoc(doc(db,"species",s.id),{name:s.name,cat:s.cat,emoji:s.emoji,sun:s.sun,water:s.water,tip:s.tip});
-    // create one default pot per species
+    await setDoc(doc(db,"species",s.id),{
+      name:s.name,cat:s.cat,emoji:s.emoji,sun:s.sun,water:s.water,
+      humidity:s.humidity,soil:s.soil,fert:s.fert,prune:s.prune,
+      tip:s.tip,notes:s.notes||''
+    });
     const potId = s.id+'-vaso1';
     await setDoc(doc(db,"pots",potId),{speciesId:s.id,potName:"Vaso 1",note:'',log:[],photos:[],reminders:[],watered:false,wateredDate:''});
   }
@@ -516,7 +664,6 @@ onSnapshot(speciesCol, snap=>{
 onSnapshot(potsCol, async snap=>{
   potsMap={};
   snap.forEach(d=>{potsMap[d.id]={id:d.id,...d.data()};});
-  // reset watered for old days
   const t=today();
   for(const[id,p] of Object.entries(potsMap)){
     if(p.watered && p.wateredDate!==t) updateDoc(doc(db,"pots",id),{watered:false});
@@ -526,7 +673,6 @@ onSnapshot(potsCol, async snap=>{
   showSync();
 });
 
-// Seed on first load
 seed();
 
 function potsForSpecies(sid){ return Object.values(potsMap).filter(p=>p.speciesId===sid); }
@@ -544,8 +690,8 @@ function potChips(log){
   return h;
 }
 function hasOverdueReminder(pot){
-  const today=new Date(); today.setHours(0,0,0,0);
-  return (pot.reminders||[]).some(r=>{const d=new Date(r.date);d.setHours(0,0,0,0);return d<=today;});
+  const t=new Date(); t.setHours(0,0,0,0);
+  return (pot.reminders||[]).some(r=>{const d=new Date(r.date);d.setHours(0,0,0,0);return d<=t;});
 }
 
 function stats(){
@@ -553,7 +699,6 @@ function stats(){
   const t=today();
   document.getElementById('totalCount').textContent=Object.keys(speciesMap).length;
   document.getElementById('wateredCount').textContent=allPots.filter(p=>p.watered&&p.wateredDate===t).length;
-  // upcoming reminders (next 7 days + overdue)
   const now=new Date();now.setHours(0,0,0,0);
   const future=new Date(now);future.setDate(future.getDate()+7);
   let rc=0;
@@ -599,20 +744,18 @@ function render(){
       <div class="pots-row" id="pots-${s.id}"></div>`;
     g.appendChild(div);
 
-    // cover photo button — stop propagation so it doesn't open edit modal
     div.querySelector('.species-cover-btn').addEventListener('click',e=>{
       e.stopPropagation();
       activeCoverSpeciesId=s.id;
       document.getElementById('coverInput').click();
     });
 
-    // edit species on header click (but not on cover button)
+    // Header click → open species info modal
     div.querySelector('.species-header').addEventListener('click',e=>{
       if(e.target.closest('.species-cover-wrap'))return;
-      openEditSpecies(s.id);
+      openSpeciesInfo(s.id);
     });
 
-    // render pots
     const potsRow=div.querySelector(`#pots-${s.id}`);
     pots.sort((a,b)=>a.potName.localeCompare(b.potName,'pt')).forEach(p=>{
       const isW=p.watered&&p.wateredDate===t;
@@ -634,7 +777,6 @@ function render(){
       potsRow.appendChild(pc);
     });
 
-    // add pot button
     const addPotBtn=document.createElement('button');
     addPotBtn.className='btn-add-pot';
     addPotBtn.innerHTML='<span>+</span>Novo vaso';
@@ -643,6 +785,100 @@ function render(){
   });
   stats();
 }
+
+// ══════════════════════════════════════════════
+// SPECIES INFO MODAL
+// ══════════════════════════════════════════════
+function openSpeciesInfo(sid){
+  activeSpeciesId=sid;
+  const s=speciesMap[sid];if(!s)return;
+
+  // Hero
+  document.getElementById('sinfoEmoji').textContent=s.emoji||'🌱';
+  document.getElementById('sinfoName').textContent=s.name;
+  document.getElementById('sinfoCat').textContent=s.cat?.toUpperCase()||'';
+  const coverEl=document.getElementById('sinfoHeroCover');
+  if(s.cover){coverEl.src=s.cover;coverEl.style.display='block';}
+  else{coverEl.style.display='none';}
+
+  // Tags
+  const tagMap={
+    water:{
+      "Muito baixa":{label:"Rega muito baixa",cls:"brown"},
+      "Pouca":{label:"Rega esparsa",cls:"brown"},
+      "Baixa":{label:"Rega baixa",cls:"brown"},
+      "Moderada":{label:"Rega moderada",cls:"blue"},
+      "Alta":{label:"Rega frequente",cls:"blue"},
+      "Calice":{label:"Rega no cálice",cls:"blue"},
+    },
+    sun:{
+      "Sol pleno":{label:"☀️ Sol pleno",cls:"orange"},
+      "Meia sombra":{label:"⛅ Meia sombra",cls:"green"},
+      "Sombra":{label:"🌥️ Sombra",cls:"green"},
+      "Sol/Meia":{label:"🌤️ Sol ou meia sombra",cls:"orange"},
+      "Sombra/Meia":{label:"🌥️ Sombra ou meia sombra",cls:"green"},
+    },
+    humidity:{
+      "Ama umidade":{label:"💦 Ama umidade",cls:"blue"},
+      "Borrifar folhas":{label:"💦 Borrifar folhas",cls:"blue"},
+      "Moderada":{label:"🌫️ Umidade moderada",cls:"purple"},
+      "Prefere seca":{label:"🏜️ Prefere seca",cls:"brown"},
+      "Não borrifar":{label:"🚫 Não borrifar",cls:"brown"},
+    }
+  };
+  let tags='';
+  const wtag=tagMap.water[s.water];
+  const stag=tagMap.sun[s.sun];
+  const htag=tagMap.humidity?.[s.humidity];
+  if(stag) tags+=`<span class="sinfo-tag ${stag.cls}">${stag.label}</span>`;
+  if(wtag) tags+=`<span class="sinfo-tag ${wtag.cls}">${wtag.label}</span>`;
+  if(htag) tags+=`<span class="sinfo-tag ${htag.cls}">${htag.label}</span>`;
+  document.getElementById('sinfoTags').innerHTML=tags;
+
+  // Cards
+  const cards=[
+    {icon:'☀️',label:'Iluminação',value:s.sun||'–',sub:s.sun==='Sol pleno'?'Pelo menos 6h de sol direto por dia':s.sun==='Sombra'?'Sem sol direto, luz ambiente suficiente':s.sun==='Meia sombra'?'2–4h de sol suave ou luz indireta brilhante':'Sol direto ou indireta brilhante'},
+    {icon:'💧',label:'Necessidade de rega',value:s.water||'–',sub:s.water==='Muito baixa'?'1× a cada 3–4 semanas':s.water==='Pouca'?'1× por semana ou menos':s.water==='Baixa'?'1–2× por semana':s.water==='Moderada'?'2–3× por semana':s.water==='Alta'?'Diariamente ou a cada 2 dias':'Manter água no cálice central'},
+    {icon:'💦',label:'Umidade / borrifar',value:s.humidity||'–',sub:s.humidity==='Ama umidade'?'Borrifar folhas frequentemente':s.humidity==='Borrifar folhas'?'Borrifar diariamente, especialmente no verão':s.humidity==='Prefere seca'?'Não borrifar. Evitar excesso de umidade':s.humidity==='Não borrifar'?'Nunca borrifar — pode causar podridão':'Umidade ambiente normal é suficiente'},
+    {icon:'🪨',label:'Tipo de solo',value:s.soil||'–',sub:s.soil==='Drenado e arenoso'?'Solo poroso, com perlita ou areia grossa':s.soil==='Leve e rico'?'Terra vegetal + substrato orgânico + perlita':s.soil==='Orgânico e úmido'?'Rico em matéria orgânica, retém umidade':s.soil==='Específico p/ suculenta'?'Substrato próprio para cactus e suculentas':'Substrato universal de boa qualidade'},
+    {icon:'🌱',label:'Adubação',value:s.fert||'–',sub:s.fert==='Raramente (1×/ano)'?'Adubo de liberação lenta, 1× ao ano':s.fert==='Mensal na primavera/verão'?'Adubo líquido 1× ao mês na estação quente':s.fert==='Quinzenal na primavera/verão'?'Adubo líquido a cada 15 dias na estação quente':s.fert==='Frequente (toda rega)'?'Adubo diluído em toda rega':'Não necessita de adubação'},
+    {icon:'✂️',label:'Tolerância à poda',value:s.prune||'–',sub:s.prune==='Alta'?'Poda frequente estimula crescimento e floração':s.prune==='Moderada'?'Poda leve e pontual conforme necessário':s.prune==='Baixa'?'Podar apenas para remover partes secas ou doentes':'Não podar — pode prejudicar seriamente a planta'},
+  ];
+
+  let gridHtml='';
+  cards.forEach(c=>{
+    gridHtml+=`<div class="sinfo-card">
+      <div class="sinfo-card-icon">${c.icon}</div>
+      <div class="sinfo-card-label">${c.label}</div>
+      <div class="sinfo-card-value">${c.value}</div>
+      <div class="sinfo-card-sub">${c.sub}</div>
+    </div>`;
+  });
+  document.getElementById('sinfoGrid').innerHTML=gridHtml;
+
+  // Tip
+  document.getElementById('sinfoTipText').textContent=s.tip||'Nenhuma dica cadastrada.';
+
+  // Notes
+  document.getElementById('sinfoNotes').value=s.notes||'';
+
+  document.getElementById('sinfoModal').classList.add('open');
+}
+
+document.getElementById('sinfoClose').addEventListener('click',()=>document.getElementById('sinfoModal').classList.remove('open'));
+document.getElementById('sinfoModal').addEventListener('click',e=>{if(e.target.id==='sinfoModal')document.getElementById('sinfoModal').classList.remove('open');});
+
+document.getElementById('sinfoSaveBtn').addEventListener('click',async()=>{
+  if(!activeSpeciesId)return;
+  const notes=document.getElementById('sinfoNotes').value;
+  await updateDoc(doc(db,"species",activeSpeciesId),{notes});
+  toast('💾 Anotações salvas!');
+});
+
+document.getElementById('sinfoEditBtn').addEventListener('click',()=>{
+  document.getElementById('sinfoModal').classList.remove('open');
+  openEditSpecies(activeSpeciesId);
+});
 
 // ── Water ──
 async function toggleWater(potId){
@@ -659,7 +895,6 @@ async function toggleWater(potId){
   }
 }
 
-// Water ALL visible pots
 document.getElementById('btnWaterAll').addEventListener('click',async()=>{
   const t=today();
   const visibleSpecies=Object.values(speciesMap)
@@ -677,7 +912,6 @@ document.getElementById('btnWaterAll').addEventListener('click',async()=>{
   toast(`💧 ${count} vaso${count!==1?'s':''} regado${count!==1?'s':''}!`);
 });
 
-// ── Add log ──
 async function addLog(potId,type,dateStr){
   const e={type,date:dateStr,ts:Date.now()};
   const u={log:arrayUnion(e)};
@@ -685,7 +919,7 @@ async function addLog(potId,type,dateStr){
   await updateDoc(doc(db,"pots",potId),u);
 }
 
-// ── Open pot detail ──
+// ── Pot Detail ──
 function openPotDetail(potId){
   activePotId=potId;
   const p=potsMap[potId];if(!p)return;
@@ -702,7 +936,6 @@ function openPotDetail(potId){
   document.getElementById('btnToggleBackdate').textContent='📅 Registrar data passada';
   const y=new Date();y.setDate(y.getDate()-1);
   document.getElementById('backdateDate').value=y.toISOString().split('T')[0];
-  // remind date default: tomorrow
   const tom=new Date();tom.setDate(tom.getDate()+1);
   document.getElementById('remindDate').value=tom.toISOString().split('T')[0];
   refreshPotModal(potId);
@@ -717,7 +950,6 @@ function refreshPotModal(potId){
   refreshReminders(p);
 }
 
-// Photos
 function refreshPhotos(p){
   const gallery=document.getElementById('photoGallery');
   gallery.innerHTML='';
@@ -746,15 +978,12 @@ document.getElementById('coverInput').addEventListener('change',async e=>{
   reader.onload=async ev=>{
     const img=new Image();
     img.onload=async()=>{
-      const canvas=document.createElement('canvas');
-      // cover: wider crop, 400×400
       const SIZE=400;
       let w=img.width,h=img.height;
       const side=Math.min(w,h);
       const canvas2=document.createElement('canvas');
       canvas2.width=SIZE;canvas2.height=SIZE;
       const ctx=canvas2.getContext('2d');
-      // center-crop to square
       const sx=(w-side)/2,sy=(h-side)/2;
       ctx.drawImage(img,sx,sy,side,side,0,0,SIZE,SIZE);
       const data=canvas2.toDataURL('image/jpeg',0.80);
@@ -771,7 +1000,6 @@ document.getElementById('photoInput').addEventListener('change',async e=>{
   const file=e.target.files[0];if(!file||!activePotId)return;
   const reader=new FileReader();
   reader.onload=async ev=>{
-    // Compress image
     const img=new Image();
     img.onload=async()=>{
       const canvas=document.createElement('canvas');
@@ -791,7 +1019,6 @@ document.getElementById('photoInput').addEventListener('change',async e=>{
   e.target.value='';
 });
 
-// Lightbox
 function openLightbox(src,date){
   document.getElementById('lbImg').src=src;
   document.getElementById('lbDate').textContent=date;
@@ -800,7 +1027,6 @@ function openLightbox(src,date){
 document.getElementById('lbClose').addEventListener('click',()=>document.getElementById('lightbox').classList.remove('open'));
 document.getElementById('lightbox').addEventListener('click',e=>{if(e.target.id==='lightbox')document.getElementById('lightbox').classList.remove('open');});
 
-// Care
 function refreshCare(p){
   const log=p.log||[];
   const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert');
@@ -811,10 +1037,9 @@ function refreshCare(p){
     :'<span style="color:#bbb;font-style:italic">Nenhum registro ainda.</span>';
 }
 
-// History — chronological order
 function refreshHistory(p){
   const box=document.getElementById('historyBox');
-  const sorted=sortLog(p.log||[]).reverse(); // newest first in display
+  const sorted=sortLog(p.log||[]).reverse();
   if(!sorted.length){box.innerHTML='<div class="log-empty">Sem registros ainda.</div>';return;}
   box.innerHTML=sorted.map(e=>`
     <div class="log-item">
@@ -831,15 +1056,14 @@ function refreshHistory(p){
   });
 }
 
-// Reminders
 function refreshReminders(p){
   const list=document.getElementById('remindList');
   const rems=(p.reminders||[]).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  const today=new Date();today.setHours(0,0,0,0);
+  const t=new Date();t.setHours(0,0,0,0);
   if(!rems.length){list.innerHTML='<div style="font-size:.75rem;color:#bbb;font-style:italic;margin-bottom:.4rem">Sem lembretes.</div>';return;}
   list.innerHTML=rems.map(r=>{
     const d=new Date(r.date);d.setHours(0,0,0,0);
-    const overdue=d<=today;
+    const overdue=d<=t;
     const [y,m,dy]=r.date.split('-');
     const fmt=`${dy}/${m}/${y}`;
     return `<div class="remind-item${overdue?' overdue':''}">
@@ -873,7 +1097,6 @@ document.getElementById('btnRemindAdd').addEventListener('click',async()=>{
   toast('🔔 Lembrete adicionado!');
 });
 
-// Care buttons
 ['Water','Prune','Fert'].forEach(c=>{
   document.getElementById('care'+c).addEventListener('click',async()=>{
     if(!activePotId)return;
@@ -881,7 +1104,6 @@ document.getElementById('btnRemindAdd').addEventListener('click',async()=>{
   });
 });
 
-// Backdate
 document.getElementById('btnToggleBackdate').addEventListener('click',()=>{
   const panel=document.getElementById('backdatePanel');
   const open=panel.classList.toggle('open');
@@ -898,7 +1120,6 @@ document.getElementById('btnBackdateSave').addEventListener('click',async()=>{
   toast('✅ Cuidado registrado!');
 });
 
-// Save note
 document.getElementById('btnSave').addEventListener('click',async()=>{
   if(!activePotId)return;
   await updateDoc(doc(db,"pots",activePotId),{note:document.getElementById('noteArea').value});
@@ -906,7 +1127,6 @@ document.getElementById('btnSave').addEventListener('click',async()=>{
   toast('💾 Nota salva!');
 });
 
-// Rename pot
 document.getElementById('btnEditPot').addEventListener('click',()=>{
   if(!activePotId)return;
   const p=potsMap[activePotId];
@@ -914,7 +1134,6 @@ document.getElementById('btnEditPot').addEventListener('click',()=>{
   if(name&&name.trim()) updateDoc(doc(db,"pots",activePotId),{potName:name.trim()});
 });
 
-// Delete pot
 document.getElementById('btnDelPot').addEventListener('click',async()=>{
   const p=potsMap[activePotId];
   if(!p||!confirm(`Remover vaso "${p.potName}"?`))return;
@@ -923,7 +1142,6 @@ document.getElementById('btnDelPot').addEventListener('click',async()=>{
   toast('🗑 Vaso removido.');
 });
 
-// Close
 document.getElementById('btnClose').addEventListener('click',()=>document.getElementById('detailModal').classList.remove('open'));
 document.getElementById('detailModal').addEventListener('click',e=>{if(e.target.id==='detailModal')document.getElementById('detailModal').classList.remove('open');});
 
@@ -944,6 +1162,7 @@ document.getElementById('btnOpenAdd').addEventListener('click',()=>{
   document.getElementById('addModalTitle').textContent='✨ Nova Espécie';
   document.getElementById('newName').value='';
   document.getElementById('newTip').value='';
+  document.getElementById('newNotes').value='';
   document.getElementById('btnDelSpecies').style.display='none';
   document.getElementById('coverPreviewGroup').style.display='none';
   selEmoji='🌱';
@@ -961,11 +1180,15 @@ function openEditSpecies(sid){
   document.getElementById('newCat').value=s.cat;
   document.getElementById('newSun').value=s.sun;
   document.getElementById('newWater').value=s.water;
+  document.getElementById('newPrune').value=s.prune||'Moderada';
+  document.getElementById('newHumidity').value=s.humidity||'Moderada';
+  document.getElementById('newSoil').value=s.soil||'Universal';
+  document.getElementById('newFert').value=s.fert||'Mensal na primavera/verão';
   document.getElementById('newTip').value=s.tip;
+  document.getElementById('newNotes').value=s.notes||'';
   selEmoji=s.emoji;
   document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.toggle('selected',x.dataset.e===selEmoji));
   document.getElementById('btnDelSpecies').style.display='block';
-  // cover preview
   if(s.cover){
     document.getElementById('coverPreviewGroup').style.display='block';
     document.getElementById('coverPreviewImg').src=s.cover;
@@ -987,14 +1210,19 @@ document.getElementById('btnAddSave').addEventListener('click',async()=>{
     emoji:selEmoji,
     sun:document.getElementById('newSun').value,
     water:document.getElementById('newWater').value,
+    prune:document.getElementById('newPrune').value,
+    humidity:document.getElementById('newHumidity').value,
+    soil:document.getElementById('newSoil').value,
+    fert:document.getElementById('newFert').value,
     tip:document.getElementById('newTip').value.trim()||'Sem dicas cadastradas.',
+    notes:document.getElementById('newNotes').value.trim(),
   };
   if(editSpeciesMode&&activeSpeciesId){
     await updateDoc(doc(db,"species",activeSpeciesId),data);
+    toast('✅ Espécie atualizada!');
   }else{
     const sid=name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'-'+Date.now();
     await setDoc(doc(db,"species",sid),data);
-    // create first pot automatically
     const potId=sid+'-vaso1';
     await setDoc(doc(db,"pots",potId),{speciesId:sid,potName:"Vaso 1",note:'',log:[],photos:[],reminders:[],watered:false,wateredDate:''});
     toast('🌱 Espécie adicionada!');
