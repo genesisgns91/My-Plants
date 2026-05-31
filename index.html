@@ -125,7 +125,6 @@
   .care-btn.water-c:hover,.care-btn.water-c.active{background:#e8f4f8;border-color:#6ba3be}
   .care-btn.prune-c:hover,.care-btn.prune-c.active{background:#f4f0e8;border-color:#8e7b55}
   .care-btn.fert-c:hover,.care-btn.fert-c.active{background:#eef4e8;border-color:#7a9e3e}
-  .care-btn.trans-c:hover,.care-btn.trans-c.active{background:#f0ebf8;border-color:#8e6fad}
   .care-last{font-size:.7rem;color:#888;margin-bottom:.6rem;line-height:1.8}
 
   /* Backdate */
@@ -205,6 +204,28 @@
   #toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:white;padding:.55rem 1.2rem;border-radius:50px;font-size:.8rem;font-family:'DM Sans',sans-serif;z-index:900;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+  /* Reminder alert banner */
+  #reminderBanner{max-width:900px;margin:0 auto;padding:0 1.5rem .2rem;display:none}
+  .remind-banner-item{background:#fff3e0;border:1.5px solid #ffcc80;border-radius:12px;padding:.6rem .9rem;display:flex;align-items:center;gap:.6rem;font-size:.78rem;margin-bottom:.4rem;cursor:pointer}
+  .remind-banner-item:hover{background:#ffe0b2}
+  .remind-banner-icon{font-size:1.1rem;flex-shrink:0}
+  .remind-banner-text{flex:1;color:#c65100;line-height:1.35}
+  .remind-banner-plant{font-weight:600}
+  /* Advanced filter panel */
+  .filter-panel{background:white;border-radius:14px;border:1.5px solid var(--mist);padding:.9rem 1rem;margin-top:.4rem;display:none}
+  .filter-panel.open{display:block}
+  .filter-panel-title{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.55rem}
+  .filter-selects{display:flex;gap:.5rem;flex-wrap:wrap}
+  .filter-selects select{padding:.42rem .7rem;border:1.5px solid var(--mist);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.76rem;color:var(--ink);background:white;outline:none;flex:1;min-width:130px}
+  .filter-selects select:focus{border-color:var(--sage)}
+  .btn-filter-toggle{padding:.35rem .85rem;border-radius:50px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;color:var(--ink);cursor:pointer;transition:all .2s;flex-shrink:0}
+  .btn-filter-toggle:hover{border-color:var(--sage);background:var(--mist)}
+  .btn-filter-toggle.active{background:var(--moss);border-color:var(--moss);color:white}
+  /* Mini chart in pot modal */
+  .mini-chart-wrap{background:white;border-radius:10px;padding:.6rem .7rem;margin-bottom:.6rem}
+  .mini-chart-title{font-size:.65rem;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:.35rem}
+  canvas.mini-chart{display:block;width:100%;height:68px}
+
   /* ═══ SPECIES INFO MODAL ═══ */
   .sinfo-modal{background:var(--cream);border-radius:24px 24px 18px 18px;padding:0;width:100%;max-width:460px;transform:translateY(30px);transition:transform .28s cubic-bezier(.34,1.56,.64,1);max-height:94vh;overflow-y:auto;overflow-x:hidden}
   .modal-overlay.open .sinfo-modal{transform:translateY(0)}
@@ -269,12 +290,15 @@
   <p class="subtitle">Jardim Compartilhado</p>
   <div class="stats-bar">
     <div class="stat"><div class="stat-num" id="totalCount">–</div><div class="stat-label">Espécies</div></div>
-    <div class="stat"><div class="stat-num" id="wateredCount">–</div><div class="stat-label">Vasos regados</div></div>
-    <div class="stat"><div class="stat-num" id="remindCount">–</div><div class="stat-label">Lembretes</div></div>
+    <div class="stat"><div class="stat-num" id="potsCount">–</div><div class="stat-label">Vasos</div></div>
+    <div class="stat"><div class="stat-num" id="wateredCount">–</div><div class="stat-label">Regados hoje</div></div>
+    <div class="stat"><div class="stat-num" id="remindCount" style="cursor:pointer" title="Ver lembretes">–</div><div class="stat-label">⏰ Lembretes</div></div>
   </div>
 </header>
 
 <div class="vine-top">· · · ⸻ 🌱 ⸻ · · ·</div>
+
+<div id="reminderBanner"></div>
 
 <div class="controls">
   <div class="search-row">
@@ -288,7 +312,7 @@
     <button class="btn-water-all" id="btnWaterAll">💧 Regar todas</button>
     <button class="btn-water-all" id="btnExportXlsx" style="border-color:var(--gold);color:var(--gold)">📊 Exportar Excel</button>
   </div>
-  <div class="filters">
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
     <button class="filter-btn active" data-cat="todas">Todas</button>
     <button class="filter-btn" data-cat="aromáticas">Aromáticas 🌿</button>
     <button class="filter-btn" data-cat="suculentas">Suculentas 🪨</button>
@@ -297,6 +321,33 @@
     <button class="filter-btn" data-cat="comestíveis">Comestíveis 🥬</button>
     <button class="filter-btn" data-cat="sombra">Sombra 🍃</button>
     <button class="filter-btn" data-cat="outras">Outras 🌱</button>
+    <button class="btn-filter-toggle" id="btnAdvFilter">⚙️ Mais filtros</button>
+  </div>
+  <div class="filter-panel" id="filterPanel">
+    <div class="filter-panel-title">Filtros avançados</div>
+    <div class="filter-selects">
+      <select id="filterSun">
+        <option value="">☀️ Qualquer luz</option>
+        <option value="Sol pleno">☀️ Sol pleno</option>
+        <option value="Meia sombra">⛅ Meia sombra</option>
+        <option value="Sombra">🌥️ Sombra</option>
+        <option value="Sol/Meia">🌤️ Sol ou meia sombra</option>
+        <option value="Sombra/Meia">🌥️ Sombra ou meia</option>
+      </select>
+      <select id="filterWater">
+        <option value="">💧 Qualquer rega</option>
+        <option value="Muito baixa">💧 Muito baixa</option>
+        <option value="Pouca">💧 Pouca</option>
+        <option value="Baixa">💧 Baixa</option>
+        <option value="Moderada">💧 Moderada</option>
+        <option value="Alta">💧 Alta</option>
+      </select>
+      <select id="filterRemind">
+        <option value="">🔔 Todos</option>
+        <option value="overdue">⚠️ Com lembrete vencido</option>
+        <option value="soon">⏰ Lembrete em breve</option>
+      </select>
+    </div>
   </div>
 </div>
 
@@ -351,14 +402,9 @@
 <!-- POT DETAIL MODAL -->
 <div class="modal-overlay" id="detailModal">
   <div class="modal">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.3rem">
-      <div style="flex:1">
-        <span class="modal-emoji" id="mEmoji"></span>
-        <h2 id="mName"></h2>
-        <div class="modal-type" id="mType"></div>
-      </div>
-      <button id="btnCloseTop" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,.08);color:#555;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:.5rem;margin-top:.2rem;transition:background .2s" title="Fechar">✕</button>
-    </div>
+    <span class="modal-emoji" id="mEmoji"></span>
+    <h2 id="mName"></h2>
+    <div class="modal-type" id="mType"></div>
     <div class="modal-info" id="mInfo"></div>
 
     <!-- Photos -->
@@ -371,13 +417,18 @@
     <div class="section-title" style="margin-top:.2rem">📈 Frequências médias</div>
     <div class="freq-grid" id="freqGrid"></div>
 
+    <!-- Mini chart -->
+    <div class="mini-chart-wrap">
+      <div class="mini-chart-title">📈 Frequência de rega (intervalos em dias)</div>
+      <canvas class="mini-chart" id="miniChart"></canvas>
+    </div>
+
     <!-- Care -->
     <div class="section-title">Registrar cuidado</div>
     <div class="care-row">
       <button class="care-btn water-c" id="careWater">💧 Reguei</button>
       <button class="care-btn prune-c" id="carePrune">✂️ Podei</button>
       <button class="care-btn fert-c"  id="careFert">🌱 Adubei</button>
-      <button class="care-btn trans-c" id="careTrans" style="border-color:#8e6fad">🪴 Transplantei</button>
     </div>
     <div class="care-last" id="careLast"></div>
 
@@ -389,7 +440,6 @@
           <option value="water">💧 Rega</option>
           <option value="prune">✂️ Poda</option>
           <option value="fert">🌱 Adubação</option>
-          <option value="transplant">🪴 Transplante</option>
         </select>
         <input type="date" id="backdateDate">
         <button class="btn-backdate-save" id="btnBackdateSave">Salvar</button>
@@ -570,7 +620,7 @@ const potsCol    = collection(db,"pots");
 const EMOJIS=['🌿','🌱','🌸','🌺','🌻','🌼','🌷','🍀','🍃','🍂','🌵','🪴','🌳','🌴','🌾','🎋','🪻','💐','🌹','🥀','🌲','🪷','🍁','🧅','🥬','🐘'];
 const wIco={"Muito baixa":"💧","Pouca":"💧💧","Baixa":"💧💧","Moderada":"💧💧💧","Alta":"💧💧💧💧","Calice":"🥤"};
 const sIco={"Sol pleno":"☀️","Meia sombra":"⛅","Sombra":"🌥️","Sol/Meia":"🌤️","Sombra/Meia":"🌥️"};
-const cLbl={water:"💧 Rega",prune:"✂️ Poda",fert:"🌱 Adubação",transplant:"🪴 Transplante"};
+const cLbl={water:"💧 Rega",prune:"✂️ Poda",fert:"🌱 Adubação"};
 const remindIco={water:"💧",prune:"✂️",fert:"🌱",other:"📝"};
 
 let speciesMap={}, potsMap={};
@@ -705,12 +755,11 @@ function lastOf(log,type){
   return a.length?sortLog(a)[a.length-1].date:null;
 }
 function potChips(log){
-  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert'),lt=lastOf(log,'transplant');
+  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert');
   let h='';
   if(lr)h+=`<div class="pot-chip"><span class="dot dot-water"></span>${lr}</div>`;
   if(lp)h+=`<div class="pot-chip"><span class="dot dot-prune"></span>${lp}</div>`;
   if(lf)h+=`<div class="pot-chip"><span class="dot dot-fert"></span>${lf}</div>`;
-  if(lt)h+=`<div class="pot-chip"><span class="dot" style="background:#8e6fad"></span>${lt}</div>`;
   return h;
 }
 function hasOverdueReminder(pot){
@@ -722,25 +771,85 @@ function stats(){
   const allPots=Object.values(potsMap);
   const t=today();
   document.getElementById('totalCount').textContent=Object.keys(speciesMap).length;
+  document.getElementById('potsCount').textContent=allPots.length;
   document.getElementById('wateredCount').textContent=allPots.filter(p=>p.watered&&p.wateredDate===t).length;
   const now=new Date();now.setHours(0,0,0,0);
   const future=new Date(now);future.setDate(future.getDate()+7);
   let rc=0;
   allPots.forEach(p=>(p.reminders||[]).forEach(r=>{const d=new Date(r.date);d.setHours(0,0,0,0);if(d<=future)rc++;}));
   document.getElementById('remindCount').textContent=rc;
+  renderReminderBanner(allPots,now);
+}
+
+function renderReminderBanner(allPots,now){
+  const banner=document.getElementById('reminderBanner');
+  const today2=new Date(now);
+  const soon=new Date(now);soon.setDate(soon.getDate()+2);
+  const remindIcoMap={water:'💧',prune:'✂️',fert:'🌱',transplant:'🪴',other:'📝'};
+  const items=[];
+  allPots.forEach(p=>{
+    (p.reminders||[]).forEach(r=>{
+      const d=new Date(r.date);d.setHours(0,0,0,0);
+      if(d<=soon){
+        const s=speciesMap[p.speciesId];
+        const overdue=d<=today2;
+        const [y,m,dy]=r.date.split('-');
+        items.push({potId:p.id,potName:p.potName,speciesName:s?.name||'',overdue,date:`${dy}/${m}/${y}`,type:r.type,note:r.note,icon:remindIcoMap[r.type]||'📝'});
+      }
+    });
+  });
+  if(!items.length){banner.style.display='none';return;}
+  banner.style.display='block';
+  banner.innerHTML=items.map(it=>`
+    <div class="remind-banner-item" data-potid="${it.potId}">
+      <span class="remind-banner-icon">${it.overdue?'⚠️':it.icon}</span>
+      <span class="remind-banner-text">
+        <span class="remind-banner-plant">${it.speciesName} — ${it.potName}</span>
+        ${it.note?` · ${it.note}`:` · ${it.type==='water'?'Regar':it.type==='prune'?'Podar':it.type==='fert'?'Adubar':it.type==='transplant'?'Transplantar':'Lembrete'}`}
+        <br><span style="font-size:.7rem;opacity:.8">${it.overdue?'Vencido em':'Previsto para'} ${it.date}</span>
+      </span>
+    </div>`).join('');
+  banner.querySelectorAll('.remind-banner-item').forEach(el=>{
+    el.addEventListener('click',()=>openPotDetail(el.dataset.potid));
+  });
 }
 
 function render(){
   const g=document.getElementById('speciesGroups');
   const t=today();
+  const fSun=document.getElementById('filterSun')?.value||'';
+  const fWater=document.getElementById('filterWater')?.value||'';
+  const fRemind=document.getElementById('filterRemind')?.value||'';
+  const now=new Date();now.setHours(0,0,0,0);
+  const soon=new Date(now);soon.setDate(soon.getDate()+2);
+
   const speciesList=Object.values(speciesMap)
-    .filter(s=>(curFilter==='todas'||s.cat===curFilter)&&s.name.toLowerCase().includes(curSearch.toLowerCase()))
+    .filter(s=>{
+      if(curFilter!=='todas'&&s.cat!==curFilter)return false;
+      if(!s.name.toLowerCase().includes(curSearch.toLowerCase()))return false;
+      if(fSun&&s.sun!==fSun)return false;
+      if(fWater&&s.water!==fWater)return false;
+      return true;
+    })
     .sort((a,b)=>a.name.localeCompare(b.name,'pt'));
 
-  g.innerHTML='';
-  if(!speciesList.length){g.innerHTML='<div class="empty">Nenhuma planta encontrada…</div>';stats();return;}
+  // filter by reminder if needed
+  const filteredSpecies = fRemind ? speciesList.filter(s=>{
+    const pots=potsForSpecies(s.id);
+    return pots.some(p=>{
+      return (p.reminders||[]).some(r=>{
+        const d=new Date(r.date);d.setHours(0,0,0,0);
+        if(fRemind==='overdue')return d<=now;
+        if(fRemind==='soon')return d<=soon&&d>=now;
+        return false;
+      });
+    });
+  }) : speciesList;
 
-  speciesList.forEach((s,si)=>{
+  g.innerHTML='';
+  if(!filteredSpecies.length){g.innerHTML='<div class="empty">Nenhuma planta encontrada…</div>';stats();return;}
+
+  filteredSpecies.forEach((s,si)=>{
     const pots=potsForSpecies(s.id);
     const anyOverdue=pots.some(p=>hasOverdueReminder(p));
     const div=document.createElement('div');
@@ -1054,9 +1163,9 @@ document.getElementById('lightbox').addEventListener('click',e=>{if(e.target.id=
 
 function refreshCare(p){
   const log=p.log||[];
-  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert'),lt=lastOf(log,'transplant');
+  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert');
   const pts=[];
-  if(lr)pts.push(`💧 ${lr}`);if(lp)pts.push(`✂️ ${lp}`);if(lf)pts.push(`🌱 ${lf}`);if(lt)pts.push(`🪴 ${lt}`);
+  if(lr)pts.push(`💧 ${lr}`);if(lp)pts.push(`✂️ ${lp}`);if(lf)pts.push(`🌱 ${lf}`);
   document.getElementById('careLast').innerHTML=pts.length
     ?pts.map(x=>`<span style="margin-right:.8rem">${x}</span>`).join('')
     :'<span style="color:#bbb;font-style:italic">Nenhum registro ainda.</span>';
@@ -1068,7 +1177,7 @@ function refreshHistory(p){
   if(!sorted.length){box.innerHTML='<div class="log-empty">Sem registros ainda.</div>';return;}
   box.innerHTML=sorted.map(e=>`
     <div class="log-item">
-      <span class="log-icon">${e.type==='water'?'💧':e.type==='prune'?'✂️':e.type==='transplant'?'🪴':'🌱'}</span>
+      <span class="log-icon">${e.type==='water'?'💧':e.type==='prune'?'✂️':'🌱'}</span>
       <span class="log-text">${cLbl[e.type]||e.type}</span>
       <span class="log-date">${e.date}</span>
       <button class="log-del" data-type="${e.type}" data-date="${e.date}" data-ts="${e.ts}">✕</button>
@@ -1122,16 +1231,12 @@ document.getElementById('btnRemindAdd').addEventListener('click',async()=>{
   toast('🔔 Lembrete adicionado!');
 });
 
-['Water','Prune','Fert','Trans'].forEach(c=>{
+['Water','Prune','Fert'].forEach(c=>{
   document.getElementById('care'+c).addEventListener('click',async()=>{
     if(!activePotId)return;
-    const type=c==='Trans'?'transplant':c.toLowerCase();
-    await addLog(activePotId,type,today());
-    toast(c==='Trans'?'🪴 Transplante registrado!':c==='Water'?'💧 Rega registrada!':c==='Prune'?'✂️ Poda registrada!':'🌱 Adubação registrada!');
+    await addLog(activePotId,c.toLowerCase(),today());
   });
 });
-
-document.getElementById('btnCloseTop').addEventListener('click',()=>document.getElementById('detailModal').classList.remove('open'));
 
 document.getElementById('btnToggleBackdate').addEventListener('click',()=>{
   const panel=document.getElementById('backdatePanel');
@@ -1458,6 +1563,120 @@ document.querySelectorAll('.filter-btn').forEach(b=>{
     b.classList.add('active');curFilter=b.dataset.cat;render();
   });
 });
+
+// Advanced filter toggle
+document.getElementById('btnAdvFilter').addEventListener('click',()=>{
+  const panel=document.getElementById('filterPanel');
+  const open=panel.classList.toggle('open');
+  document.getElementById('btnAdvFilter').classList.toggle('active',open);
+  document.getElementById('btnAdvFilter').textContent=open?'✕ Fechar filtros':'⚙️ Mais filtros';
+});
+['filterSun','filterWater','filterRemind'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('change',()=>render());
+});
+
+// ── BACK BUTTON: fecha modal aberto em vez de navegar ──────────────────────
+function pushModalState(){
+  history.pushState({modal:true},'');
+}
+function openModal(el){
+  el.classList.add('open');
+  pushModalState();
+}
+function closeTopModal(){
+  const modals=['lightbox','detailModal','sinfoModal','addModal','potModal'];
+  for(const id of modals){
+    const el=document.getElementById(id);
+    if(el&&(el.classList.contains('open')||(id==='lightbox'&&el.classList.contains('open')))){
+      el.classList.remove('open');
+      return true;
+    }
+  }
+  return false;
+}
+window.addEventListener('popstate',e=>{
+  const closed=closeTopModal();
+  if(closed){
+    // push state again so back still works if another modal is open
+    const anyOpen=['lightbox','detailModal','sinfoModal','addModal','potModal']
+      .some(id=>document.getElementById(id)?.classList.contains('open'));
+    if(anyOpen)pushModalState();
+  }
+});
+// Patch existing modal opens to use pushState
+(()=>{
+  const orig=Element.prototype.classList;
+  // Instead patch at the call sites — intercept detailModal and sinfoModal open
+  const patchOpen=(id)=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const obs=new MutationObserver(()=>{
+      if(el.classList.contains('open'))pushModalState();
+    });
+    obs.observe(el,{attributes:true,attributeFilter:['class']});
+  };
+  ['detailModal','sinfoModal','addModal','potModal'].forEach(patchOpen);
+})();
+
+// ── MINI CHART (water intervals) ──────────────────────────────────────────
+function renderMiniChart(pot){
+  const canvas=document.getElementById('miniChart');
+  if(!canvas)return;
+  const W=canvas.offsetWidth||300;
+  const H=68;
+  canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+
+  const entries=sortLog((pot.log||[]).filter(e=>e.type==='water'));
+  if(entries.length<2){
+    ctx.font='11px DM Sans,sans-serif';ctx.fillStyle='#bbb';ctx.textAlign='center';
+    ctx.fillText('Registre pelo menos 2 regas para ver o gráfico',W/2,H/2);
+    return;
+  }
+  const intervals=[];
+  for(let i=1;i<entries.length;i++){
+    const a=parseDate(entries[i-1].date),b=parseDate(entries[i].date);
+    const d=Math.round((b-a)/86400000);
+    if(d>0)intervals.push({v:d,date:entries[i].date});
+  }
+  if(!intervals.length)return;
+  const max=Math.max(...intervals.map(x=>x.v),1);
+  const avg=intervals.reduce((s,x)=>s+x.v,0)/intervals.length;
+  const pad={l:24,r:8,t:6,b:18};
+  const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const bW=Math.max(4,Math.min(28,cW/intervals.length-3));
+
+  ctx.fillStyle='#fafaf8';ctx.fillRect(0,0,W,H);
+  // avg line
+  const avgY=pad.t+cH-(avg/max)*cH;
+  ctx.strokeStyle='#6ba3be55';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(pad.l,avgY);ctx.lineTo(W-pad.r,avgY);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#6ba3be99';ctx.font='8px sans-serif';ctx.textAlign='right';
+  ctx.fillText('avg '+Math.round(avg)+'d',W-pad.r,avgY-2);
+
+  intervals.forEach((item,i)=>{
+    const x=pad.l+i*(cW/intervals.length)+cW/(intervals.length*2)-bW/2;
+    const bH=(item.v/max)*cH;
+    const y=pad.t+cH-bH;
+    ctx.fillStyle='#6ba3becc';
+    ctx.beginPath();ctx.roundRect(x,y,bW,bH,3);ctx.fill();
+    if(bH>12){ctx.fillStyle='#fff';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(item.v,x+bW/2,y+10);}
+    if(intervals.length<=10){
+      ctx.fillStyle='#bbb';ctx.font='7px sans-serif';ctx.textAlign='center';
+      ctx.fillText(item.date.substring(0,5),x+bW/2,H-2);
+    }
+  });
+}
+
+// Patch refreshPotModal to also draw mini chart
+const _origRefresh=refreshPotModal;
+function refreshPotModal(potId){
+  _origRefresh(potId);
+  const p=potsMap[potId];
+  if(p)setTimeout(()=>renderMiniChart(p),30);
+}
 </script>
 </body>
 </html>
