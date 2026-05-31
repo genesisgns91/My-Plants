@@ -742,7 +742,10 @@ onSnapshot(potsCol, async snap=>{
     if(p.watered && p.wateredDate!==t) updateDoc(doc(db,"pots",id),{watered:false});
   }
   render();
-  if(activePotId && potsMap[activePotId]) refreshPotModal(activePotId);
+  if(activePotId && potsMap[activePotId]){
+    refreshPotModal(activePotId);
+    setTimeout(()=>renderMiniChart(potsMap[activePotId]),60);
+  }
   showSync();
 });
 
@@ -1073,6 +1076,7 @@ function openPotDetail(potId){
   document.getElementById('remindDate').value=tom.toISOString().split('T')[0];
   refreshPotModal(potId);
   document.getElementById('detailModal').classList.add('open');
+  setTimeout(()=>renderMiniChart(potsMap[potId]),60);
 }
 
 function refreshPotModal(potId){
@@ -1668,14 +1672,6 @@ function renderMiniChart(pot){
       ctx.fillText(item.date.substring(0,5),x+bW/2,H-2);
     }
   });
-}
-
-// Patch refreshPotModal to also draw mini chart
-const _origRefresh=refreshPotModal;
-function refreshPotModal(potId){
-  _origRefresh(potId);
-  const p=potsMap[potId];
-  if(p)setTimeout(()=>renderMiniChart(p),30);
 }
 </script>
 </body>
