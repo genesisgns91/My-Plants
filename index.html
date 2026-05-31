@@ -125,6 +125,7 @@
   .care-btn.water-c:hover,.care-btn.water-c.active{background:#e8f4f8;border-color:#6ba3be}
   .care-btn.prune-c:hover,.care-btn.prune-c.active{background:#f4f0e8;border-color:#8e7b55}
   .care-btn.fert-c:hover,.care-btn.fert-c.active{background:#eef4e8;border-color:#7a9e3e}
+  .care-btn.trans-c:hover,.care-btn.trans-c.active{background:#f0ebf8;border-color:#8e6fad}
   .care-last{font-size:.7rem;color:#888;margin-bottom:.6rem;line-height:1.8}
 
   /* Backdate */
@@ -425,10 +426,11 @@
 
     <!-- Care -->
     <div class="section-title">Registrar cuidado</div>
-    <div class="care-row">
+    <div class="care-row" style="flex-wrap:wrap">
       <button class="care-btn water-c" id="careWater">💧 Reguei</button>
       <button class="care-btn prune-c" id="carePrune">✂️ Podei</button>
       <button class="care-btn fert-c"  id="careFert">🌱 Adubei</button>
+      <button class="care-btn trans-c" id="careTrans">🪴 Transplantei</button>
     </div>
     <div class="care-last" id="careLast"></div>
 
@@ -440,6 +442,7 @@
           <option value="water">💧 Rega</option>
           <option value="prune">✂️ Poda</option>
           <option value="fert">🌱 Adubação</option>
+          <option value="transplant">🪴 Transplante</option>
         </select>
         <input type="date" id="backdateDate">
         <button class="btn-backdate-save" id="btnBackdateSave">Salvar</button>
@@ -758,11 +761,12 @@ function lastOf(log,type){
   return a.length?sortLog(a)[a.length-1].date:null;
 }
 function potChips(log){
-  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert');
+  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert'),lt=lastOf(log,'transplant');
   let h='';
   if(lr)h+=`<div class="pot-chip"><span class="dot dot-water"></span>${lr}</div>`;
   if(lp)h+=`<div class="pot-chip"><span class="dot dot-prune"></span>${lp}</div>`;
   if(lf)h+=`<div class="pot-chip"><span class="dot dot-fert"></span>${lf}</div>`;
+  if(lt)h+=`<div class="pot-chip"><span class="dot" style="background:#8e6fad"></span>${lt}</div>`;
   return h;
 }
 function hasOverdueReminder(pot){
@@ -1167,9 +1171,9 @@ document.getElementById('lightbox').addEventListener('click',e=>{if(e.target.id=
 
 function refreshCare(p){
   const log=p.log||[];
-  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert');
+  const lr=lastOf(log,'water'),lp=lastOf(log,'prune'),lf=lastOf(log,'fert'),lt=lastOf(log,'transplant');
   const pts=[];
-  if(lr)pts.push(`💧 ${lr}`);if(lp)pts.push(`✂️ ${lp}`);if(lf)pts.push(`🌱 ${lf}`);
+  if(lr)pts.push(`💧 ${lr}`);if(lp)pts.push(`✂️ ${lp}`);if(lf)pts.push(`🌱 ${lf}`);if(lt)pts.push(`🪴 ${lt}`);
   document.getElementById('careLast').innerHTML=pts.length
     ?pts.map(x=>`<span style="margin-right:.8rem">${x}</span>`).join('')
     :'<span style="color:#bbb;font-style:italic">Nenhum registro ainda.</span>';
@@ -1181,7 +1185,7 @@ function refreshHistory(p){
   if(!sorted.length){box.innerHTML='<div class="log-empty">Sem registros ainda.</div>';return;}
   box.innerHTML=sorted.map(e=>`
     <div class="log-item">
-      <span class="log-icon">${e.type==='water'?'💧':e.type==='prune'?'✂️':'🌱'}</span>
+      <span class="log-icon">${e.type==='water'?'💧':e.type==='prune'?'✂️':e.type==='transplant'?'🪴':'🌱'}</span>
       <span class="log-text">${cLbl[e.type]||e.type}</span>
       <span class="log-date">${e.date}</span>
       <button class="log-del" data-type="${e.type}" data-date="${e.date}" data-ts="${e.ts}">✕</button>
@@ -1235,10 +1239,12 @@ document.getElementById('btnRemindAdd').addEventListener('click',async()=>{
   toast('🔔 Lembrete adicionado!');
 });
 
-['Water','Prune','Fert'].forEach(c=>{
+['Water','Prune','Fert','Trans'].forEach(c=>{
   document.getElementById('care'+c).addEventListener('click',async()=>{
     if(!activePotId)return;
-    await addLog(activePotId,c.toLowerCase(),today());
+    const type=c==='Trans'?'transplant':c.toLowerCase();
+    await addLog(activePotId,type,today());
+    toast(type==='transplant'?'🪴 Transplante registrado!':type==='water'?'💧 Rega registrada!':type==='prune'?'✂️ Poda registrada!':'🌱 Adubação registrada!');
   });
 });
 
