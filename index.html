@@ -2,14 +2,40 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Minhas Plantas 🌿</title>
+<meta name="description" content="Cuide das suas plantas: regas, adubação, poda, lembretes e fotos por espécie.">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4a6741">
+<meta name="background-color" content="#f5f0e8">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Minhas Plantas">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+<!-- Ícones -->
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{--ink:#1a1a14;--cream:#f5f0e8;--sage:#7a9e7e;--moss:#4a6741;--terra:#c17a4a;--mist:#d4e0d2;--gold:#b8965a;--red:#c0392b;--blue:#6ba3be}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+  html{-webkit-text-size-adjust:100%;overscroll-behavior-y:contain}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent;
+    padding-top:env(safe-area-inset-top);
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+    padding-bottom:env(safe-area-inset-bottom)}
+  button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
   body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.4}
   #syncBar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--sage);z-index:999;transform:scaleX(0);transform-origin:left;transition:transform .4s}
   #syncBar.active{transform:scaleX(1)}
@@ -278,6 +304,25 @@
   .sinfo-btn-edit:hover{background:var(--mist)}
   .sinfo-btn-save{flex:2;padding:.65rem;border-radius:10px;border:none;background:var(--moss);color:white;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:background .2s}
   .sinfo-btn-save:hover{background:var(--sage)}
+
+  /* ═══ Responsivo / PWA ═══ */
+  @media (max-width:480px){
+    input,select,textarea{font-size:16px!important} /* evita zoom automático no iOS */
+    header{padding:2.2rem 1.2rem 1.5rem}
+    .stats-bar{gap:1.1rem}
+    .stat-num{font-size:1.5rem}
+    .pot-card{width:112px}
+    .modal,.sinfo-modal{border-radius:18px 18px 0 0}
+  }
+  @media (max-width:360px){
+    h1{font-size:1.9rem}
+    .stats-bar{gap:.7rem}
+    .pot-card{width:100px}
+    .btn-water-all{font-size:.72rem;padding:.5rem .7rem}
+  }
+  @media (display-mode:standalone){
+    #onlineStatus{top:calc(8px + env(safe-area-inset-top))}
+  }
 </style>
 </head>
 <body>
@@ -1677,6 +1722,15 @@ function renderMiniChart(pot){
       ctx.fillStyle='#bbb';ctx.font='7px sans-serif';ctx.textAlign='center';
       ctx.fillText(item.date.substring(0,5),x+bW/2,H-2);
     }
+  });
+}
+</script>
+
+<script>
+// ── PWA: registro do Service Worker ─────────────────────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(err=>console.warn('SW falhou:',err));
   });
 }
 </script>
