@@ -298,6 +298,18 @@
   .sinfo-notes-area:focus{border-color:var(--sage)}
   .sinfo-notes-hint{font-size:.68rem;color:#aaa;margin-top:.3rem;margin-bottom:.8rem}
 
+  /* AI research box inside sinfo */
+  .sinfo-ai-box{background:white;border-radius:12px;padding:.85rem 1rem;border:1.5px solid var(--mist);margin-bottom:.5rem;font-size:.83rem;color:#444;line-height:1.65}
+  .sinfo-ai-box p{margin-bottom:.5rem}
+  .sinfo-ai-box p:last-child{margin-bottom:0}
+  .sinfo-btn-ai{width:100%;padding:.65rem;border-radius:10px;border:none;background:linear-gradient(135deg,#8957e5,#4a6741);color:white;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:opacity .2s}
+  .sinfo-btn-ai:hover{opacity:.9}
+  .sinfo-btn-ai:disabled{opacity:.6;cursor:default}
+  .ai-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:white;border-radius:50%;animation:aispin .8s linear infinite;flex-shrink:0}
+  @keyframes aispin{to{transform:rotate(360deg)}}
+  .sinfo-ai-save{margin-top:.5rem;width:100%;padding:.5rem;border-radius:9px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.75rem;color:var(--moss);cursor:pointer;transition:background .2s}
+  .sinfo-ai-save:hover{background:var(--mist)}
+
   /* Action row inside sinfo */
   .sinfo-actions{display:flex;gap:.5rem;margin-top:.8rem}
   .sinfo-btn-edit{flex:1;padding:.65rem;border-radius:10px;border:1.5px solid var(--mist);background:white;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;color:var(--moss);transition:all .2s}
@@ -431,6 +443,12 @@
       <!-- Dicas gerais -->
       <div class="sinfo-section">💡 Dicas gerais</div>
       <div id="sinfoTipText" style="font-size:.84rem;color:#444;line-height:1.65;background:white;border-radius:12px;padding:.85rem 1rem;border:1.5px solid var(--mist);margin-bottom:.3rem"></div>
+
+      <!-- Pesquisa com IA -->
+      <div class="sinfo-section" style="margin-top:1.1rem">🤖 Pesquisa com IA</div>
+      <div id="sinfoAiResult" class="sinfo-ai-box" style="display:none"></div>
+      <button class="sinfo-btn-ai" id="sinfoAiBtn">✦ Buscar informações completas</button>
+      <button class="sinfo-ai-save" id="sinfoAiSaveBtn" style="display:none">💾 Adicionar às anotações</button>
 
       <!-- Anotações da espécie (editável) -->
       <div class="sinfo-section" style="margin-top:1.1rem">📝 Minhas anotações sobre esta espécie</div>
@@ -1047,6 +1065,15 @@ function openSpeciesInfo(sid){
   // Notes
   document.getElementById('sinfoNotes').value=s.notes||'';
 
+  // Reset AI box (nova espécie = nova pesquisa)
+  lastAiResultText='';
+  document.getElementById('sinfoAiResult').style.display='none';
+  document.getElementById('sinfoAiResult').innerHTML='';
+  document.getElementById('sinfoAiSaveBtn').style.display='none';
+  const aiBtnReset=document.getElementById('sinfoAiBtn');
+  aiBtnReset.disabled=false;
+  aiBtnReset.innerHTML='✦ Buscar informações completas';
+
   document.getElementById('sinfoModal').classList.add('open');
 }
 
@@ -1063,6 +1090,77 @@ document.getElementById('sinfoSaveBtn').addEventListener('click',async()=>{
 document.getElementById('sinfoEditBtn').addEventListener('click',()=>{
   document.getElementById('sinfoModal').classList.remove('open');
   openEditSpecies(activeSpeciesId);
+});
+
+// ══════════════════════════════════════════════
+// PESQUISA COM IA (mesmo proxy usado no revolucao_solar.html)
+// ══════════════════════════════════════════════
+const AI_PROXY_URL='https://astro-gns-proxy.genesisgns.workers.dev/';
+let lastAiResultText='';
+
+document.getElementById('sinfoAiBtn').addEventListener('click',async()=>{
+  if(!activeSpeciesId)return;
+  const s=speciesMap[activeSpeciesId];if(!s)return;
+  const btn=document.getElementById('sinfoAiBtn');
+  const resultBox=document.getElementById('sinfoAiResult');
+  const saveBtn=document.getElementById('sinfoAiSaveBtn');
+
+  btn.disabled=true;
+  btn.innerHTML='<span class="ai-spinner"></span> Consultando IA…';
+  saveBtn.style.display='none';
+  resultBox.style.display='block';
+  resultBox.innerHTML='<span style="color:#aaa;font-style:italic">Buscando informações sobre a planta…</span>';
+
+  const promptText=`Atue como um botânico e especialista em jardinagem doméstica. Forneça informações completas e práticas sobre a planta "${s.name}" (categoria cadastrada no app: ${s.cat}).
+
+Dados que já temos cadastrados: iluminação=${s.sun||'–'}, necessidade de rega=${s.water||'–'}, umidade/borrifar=${s.humidity||'–'}, solo=${s.soil||'–'}, adubação=${s.fert||'–'}, tolerância à poda=${s.prune||'–'}.
+
+Inclua na resposta, em tópicos curtos e objetivos:
+- Nome científico e principais nomes populares/regionais no Brasil
+- Região de origem
+- Tipo de solo ideal para cultivo em vaso
+- Frequência de rega recomendada
+- Necessidade de sol pleno, meia sombra ou sombra
+- Cuidados gerais e erros comuns a evitar
+- Toxicidade para pets ou crianças, se houver
+- Uma curiosidade interessante sobre a espécie
+
+Responda em português do Brasil, em HTML simples (parágrafos <p> e rótulos em <strong>), sem usar markdown nem blocos de código, de forma concisa.`;
+
+  try{
+    const response=await fetch(AI_PROXY_URL,{
+      method:'POST',
+      cache:'no-store',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt:promptText})
+    });
+    const data=await response.json();
+    if(response.ok && data.resposta){
+      const html=data.resposta.replace(/```html/g,'').replace(/```/g,'');
+      resultBox.innerHTML=html;
+      lastAiResultText=resultBox.innerText.trim();
+      saveBtn.style.display='block';
+    }else{
+      resultBox.innerHTML=`<span style="color:var(--red)">Erro: ${data.error||'Não foi possível obter resposta da IA.'}</span>`;
+    }
+  }catch(err){
+    console.error(err);
+    resultBox.innerHTML=`<span style="color:var(--red)">Erro de conexão: ${err.message}</span>`;
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='✦ Buscar informações completas';
+  }
+});
+
+document.getElementById('sinfoAiSaveBtn').addEventListener('click',async()=>{
+  if(!activeSpeciesId||!lastAiResultText)return;
+  const notesArea=document.getElementById('sinfoNotes');
+  const existing=notesArea.value.trim();
+  const stamp=new Date().toLocaleDateString('pt-BR');
+  const block=`— Pesquisa IA (${stamp}) —\n${lastAiResultText}`;
+  notesArea.value=existing?`${existing}\n\n${block}`:block;
+  await updateDoc(doc(db,"species",activeSpeciesId),{notes:notesArea.value});
+  toast('💾 Informações da IA salvas nas anotações!');
 });
 
 // ── Water ──
